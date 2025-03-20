@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
         <h1>Three.js Projects</h1>
         <ul>
             <li><a href="/moving_cube">Moving Cube</a></li>
-            <li><a href="/project2">Project 2</a></li>
+            <li><a href="/castle">Castle</a></li>
         </ul>
     `);
 });

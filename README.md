@@ -1,5 +1,7 @@
 # To Do
 - Script for generating a new project
+- Hot Reload
+- Add rotation in x axis to the camera
 
 # Intended Structure
 ```
