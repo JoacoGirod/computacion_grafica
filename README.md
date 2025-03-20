@@ -1,3 +1,6 @@
+# To Do
+- Script for generating a new project
+
 # Intended Structure
 ```
 my-threejs-server/
@@ -17,7 +20,7 @@ my-threejs-server/
 │── server.js
 │── package.json
 │── node_modules/
-│── Dockerfile  (if you want to dockerize it)
+│── Dockerfile
 ```
 # New Projects
 A folder has to be created within public with the desired name and optionally a link can be added in the `server.js` that points to that project
@@ -34,7 +37,3 @@ docker build -t my-threejs-server .
 ```bash
 docker run -p 8080:8080 -v $(pwd)/public:/app/public my-threejs-server
 ```
-
-
-# To do
-Paths distintos para cada proyecto
