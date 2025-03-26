@@ -1,4 +1,5 @@
 import express from 'express';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -11,13 +12,21 @@ const PORT = process.env.PORT || 8080;
 // Serve each project dynamically
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Redirect `/` to a home page listing the projects (optional)
+// Dynamically generate project list
 app.get('/', (req, res) => {
+    const publicDir = path.join(__dirname, 'public');
+    const projects = fs.readdirSync(publicDir).filter(file =>
+        fs.statSync(path.join(publicDir, file)).isDirectory()
+    );
+
+    const projectLinks = projects.map(project =>
+        `<li><a href="/${project}">${project.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</a></li>`
+    ).join('\n');
+
     res.send(`
         <h1>Three.js Projects</h1>
         <ul>
-            <li><a href="/moving_cube">Moving Cube</a></li>
-            <li><a href="/castle">Castle</a></li>
+            ${projectLinks}
         </ul>
     `);
 });

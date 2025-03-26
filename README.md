@@ -1,5 +1,4 @@
 # To Do
-- Script for generating a new project
 - Hot Reload
 - Add rotation in x axis to the camera
 
@@ -23,9 +22,15 @@ my-threejs-server/
 │── package.json
 │── node_modules/
 │── Dockerfile
+│── generate.py
+│── run.sh
 ```
 # New Projects
-A folder has to be created within public with the desired name and optionally a link can be added in the `server.js` that points to that project
+The `generate.py` file can be used to quickly create the starting point for a project, it includes a static cube and a moving camara for easier debugging.
+```bash
+python3 generate.py new_project
+```
+Where new_project is the project_name, the index of the server will get dynamically updated.
 
 # Build & Run
 The container has a bind mount to the `public` folder, so changes in the local codebase are reflected in the container's filesystem, which in turn affects the page served `localhost:8080` due to the port mapping.
@@ -39,3 +44,5 @@ docker build -t my-threejs-server .
 ```bash
 docker run -p 8080:8080 -v $(pwd)/public:/app/public my-threejs-server
 ```
+
+For easier use `run.sh` contains these two commands.

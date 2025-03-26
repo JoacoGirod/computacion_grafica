@@ -1,5 +1,4 @@
-// script.js
-import { mergeGeometries, updateCamera, keys } from '../utils.js';
+import { updateCamera, keys } from '../utils.js';
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
 const scene = new THREE.Scene();
@@ -8,11 +7,8 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Capture key press for camera movement
-window.addEventListener('keydown', (event) => keys[event.code] = true);
-window.addEventListener('keyup', (event) => keys[event.code] = false);
-
 // ------------ SCENE BUILDING
+
 // Colors
 const blue = 0x194163;
 const light_blue = 0x88e1ff;
@@ -88,9 +84,11 @@ const leaves_2 = new THREE.Mesh(leaves_geometry, leaves_material); leaves_2.posi
 const leaves_3 = new THREE.Mesh(leaves_geometry, leaves_material); leaves_3.position.set(-4, 2.5, 5.75); scene.add(leaves_3)
 
 // Sky
-scene.background = new THREE.Color(sky); // Light blue color (Sky blue)
+scene.background = new THREE.Color(sky);
 
-// -----------------------
+// Camera
+window.addEventListener('keydown', (event) => keys[event.code] = true);
+window.addEventListener('keyup', (event) => keys[event.code] = false);
 
 // Set initial camera position
 camera.position.set(0, 3, 8);

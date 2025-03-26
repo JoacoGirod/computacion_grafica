@@ -60,4 +60,7 @@ export function updateCamera(camera) {
 
     if (keys['KeyQ']) camera.rotation.y += 0.02;
     if (keys['KeyE']) camera.rotation.y -= 0.02;
+
+    if (keys['KeyZ']) camera.rotation.x += 0.02;
+    if (keys['KeyC']) camera.rotation.x -= 0.02;
 }
