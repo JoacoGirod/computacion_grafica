@@ -1,7 +1,3 @@
-# To Do
-- Hot Reload
-- Add rotation in x axis to the camera
-
 # Intended Structure
 ```
 my-threejs-server/
