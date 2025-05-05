@@ -30,9 +30,9 @@ hour_hand.position.z = 0.5625;
 hour_hand.position.y = 0.5;
 clock_group.add(hour_hand);
 
-const hour_pivot = new THREE.Object3D();
-hour_pivot.add(hour_hand)
-clock_group.add(hour_pivot)
+const hour_group = new THREE.Group();
+hour_group.add(hour_hand)
+clock_group.add(hour_group)
 
 // Minute Hand
 const minute_hand_geometry = new THREE.BoxGeometry(0.25, 1.5, 0.125);
@@ -42,9 +42,9 @@ minute_hand.position.z = 0.4375;
 minute_hand.position.y = 0.75;
 clock_group.add(minute_hand);
 
-const minute_pivot = new THREE.Object3D();
-minute_pivot.add(minute_hand)
-clock_group.add(minute_pivot)
+const minute_group = new THREE.Group();
+minute_group.add(minute_hand)
+clock_group.add(minute_group)
 
 // Second Hand
 const second_hand_geometry = new THREE.BoxGeometry(0.25, 2, 0.125);
@@ -54,9 +54,9 @@ second_hand.position.z = 0.3125;
 second_hand.position.y = 1;
 clock_group.add(second_hand);
 
-const second_pivot = new THREE.Object3D();
-second_pivot.add(second_hand)
-clock_group.add(second_pivot)
+const second_group = new THREE.Group();
+second_group.add(second_hand)
+clock_group.add(second_group)
 
 // Clock Group
 clock_group.position.z = 0.75;
@@ -110,9 +110,9 @@ function animate() {
     const minute_angle = -(minutes + seconds / 60) * (Math.PI * 2 / 60);     // 360° / 60 minutes
     const second_angle = -seconds * (Math.PI * 2 / 60);                      // 360° / 60 seconds
 
-    hour_pivot.rotation.z = hour_angle
-    minute_pivot.rotation.z = minute_angle
-    second_pivot.rotation.z = second_angle;
+    hour_group.rotation.z = hour_angle
+    minute_group.rotation.z = minute_angle
+    second_group.rotation.z = second_angle;
 
     cumulative += 0.01;
     var swing = (Math.PI / 4) * Math.cos(cumulative);
