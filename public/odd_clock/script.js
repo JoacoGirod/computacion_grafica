@@ -28,7 +28,6 @@ const hour_hand_material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 const hour_hand = new THREE.Mesh(hour_hand_geometry, hour_hand_material);
 hour_hand.position.z = 0.5625;
 hour_hand.position.y = 0.5;
-clock_group.add(hour_hand);
 
 const hour_group = new THREE.Group();
 hour_group.add(hour_hand)
@@ -40,7 +39,6 @@ const minute_hand_material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const minute_hand = new THREE.Mesh(minute_hand_geometry, minute_hand_material);
 minute_hand.position.z = 0.4375;
 minute_hand.position.y = 0.75;
-clock_group.add(minute_hand);
 
 const minute_group = new THREE.Group();
 minute_group.add(minute_hand)
@@ -52,7 +50,6 @@ const second_hand_material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
 const second_hand = new THREE.Mesh(second_hand_geometry, second_hand_material);
 second_hand.position.z = 0.3125;
 second_hand.position.y = 1;
-clock_group.add(second_hand);
 
 const second_group = new THREE.Group();
 second_group.add(second_hand)
