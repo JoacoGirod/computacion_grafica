@@ -1,4 +1,3 @@
-// config.js
 export const SceneConfig = {
     VEHICLE_UNIT_SCALE: 1,
     GRID_SIZE: 100,
