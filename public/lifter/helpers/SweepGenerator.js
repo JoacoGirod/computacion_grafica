@@ -1,18 +1,17 @@
 import { buildGeometry } from "./utils/buildGeometry.js";
 
 export class SweepGenerator {
-    constructor(baseCurve, height, torsion, steps) {
-        this.baseCurve = baseCurve; // Array de [x,z]
+    constructor(height, torsion, steps) {
         this.height = height;
         this.torsion = torsion;
         this.steps = steps;
     }
 
-    generateGeometry() {
+    generateGeometry(baseCurve) {
         const vertices = [];
         const faces = [];
 
-        const nPoints = this.baseCurve.length;
+        const nPoints = baseCurve.length;
         const steps = this.steps;
 
         for (let i = 0; i <= steps; i++) {
@@ -22,7 +21,7 @@ export class SweepGenerator {
             const cosA = Math.cos(angle);
             const sinA = Math.sin(angle);
 
-            for (const [x, z] of this.baseCurve) {
+            for (const [x, z] of baseCurve) {
                 // Aplica torsión: rotación alrededor del eje Y
                 const xr = x * cosA - z * sinA;
                 const zr = x * sinA + z * cosA;
@@ -38,9 +37,8 @@ export class SweepGenerator {
                 const v1 = base + j + 1;
                 const v2 = nextBase + j + 1;
                 const v3 = nextBase + j;
-                // Dos triángulos por quad
-                faces.push([v0, v1, v2]);
-                faces.push([v0, v2, v3]);
+                faces.push([v0, v2, v1]);
+                faces.push([v0, v3, v2]);
             }
         }
 

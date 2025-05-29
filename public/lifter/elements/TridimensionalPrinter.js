@@ -16,16 +16,26 @@ export class TridimensionalPrinter {
         // Clear existing printer visual
         this.group.clear();
 
-        // Create base, platform, maybe axis or arms
-        const base = new THREE.Mesh(
-            new THREE.BoxGeometry(2, 0.2, 2),
-            new THREE.MeshStandardMaterial({ color: 0x555555 })
+        // The 2D profile curve [x, y], y corresponds to height axis
+        const baseCurve = [
+            [0.0, 0.8], [1.2, 0.8], [1.4, 1.0], [1.6, 1.0], [1.8, 0.8], [1.8, 0.0], [0.0, 0.0]
+        ];
+
+        const revGen = new RevolutionGenerator(1, this.revolutionSteps);
+        const baseMesh = new THREE.Mesh(
+            revGen.generateGeometry(baseCurve),
+            new THREE.MeshNormalMaterial({ color: 0x512880 })
         );
-        base.position.y = 0.1;
-        this.group.add(base);
+
+        // Optionally position it at y = 0 (on ground)
+        // baseMesh.position.y = 0;
+
+        // Add to the printer group
+        this.group.add(baseMesh);
 
         return this.group;
     }
+
 
     print(menuValues) {
         const {

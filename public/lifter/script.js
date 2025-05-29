@@ -20,10 +20,10 @@ document.body.appendChild(renderer.domElement);
 generateHelpers(scene, SceneConfig.GRID_SIZE);
 
 // TODO Take all parameters into a main config, maybe add more values, use objects?
-const shelf = new Shelf(1.0, 0.2, 1.4); // default 2x8
-scene.add(shelf.generate());
+// const shelf = new Shelf(1.0, 0.2, 1.4); // default 2x8
+// scene.add(shelf.generate());
 
-const impresora = new TridimensionalPrinter("barrido", "B1", Math.PI / 4, 2);
+const impresora = new TridimensionalPrinter();
 const mesh = impresora.generate();
 scene.add(mesh);
 

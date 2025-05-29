@@ -1,17 +1,16 @@
 import { buildGeometry } from "./utils/buildGeometry.js";
 
 export class RevolutionGenerator {
-    constructor(baseCurve, height, torsion, steps) {
-        this.baseCurve = baseCurve; // Array de [x,z]
+    constructor(height, steps) {
         this.height = height;
         this.steps = steps;
     }
 
-    generateGeometry() {
+    generateGeometry(baseCurve) {
         const vertices = [];
         const faces = [];
 
-        const nPoints = this.baseCurve.length;
+        const nPoints = baseCurve.length;
         const steps = this.steps; // parametrizing this steps would be logical
         const fullRotation = Math.PI * 2; // Having objects made from a smaller rotation would be kinda cool
 
@@ -20,7 +19,7 @@ export class RevolutionGenerator {
             const cosA = Math.cos(angle);
             const sinA = Math.sin(angle);
 
-            for (const [x, y] of this.baseCurve) {
+            for (const [x, y] of baseCurve) {
                 const xr = x * cosA;
                 const zr = x * sinA;
                 vertices.push([xr, y * this.height, zr]);
@@ -35,8 +34,9 @@ export class RevolutionGenerator {
                 const v1 = base + j + 1;
                 const v2 = nextBase + j + 1;
                 const v3 = nextBase + j;
-                faces.push([v0, v1, v2]);
-                faces.push([v0, v2, v3]);
+                faces.push([v0, v2, v1]);
+                faces.push([v0, v3, v2]);
+
             }
         }
 
