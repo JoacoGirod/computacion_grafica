@@ -1,9 +1,13 @@
-import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+import * as THREE from 'three';
 import { updateCamera, keys } from '../utils.js';
 import { SceneConfig } from './configs/BaseConfig.js';
 import { TridimensionalPrinter } from './elements/TridimensionalPrinter.js';
 import { Shelf } from './elements/Shelf.js';
+import { flattenBezierSegments, flattenCatmullSegments, rescaleCurve } from './helpers/utils/curves.js';
 import { generateHelpers } from './debug/Helpers.js';
+import { SweepGenerator } from './helpers/SweepGenerator.js';
+import { curves } from './helpers/Curves.js';
+import { RevolutionGenerator } from './helpers/RevolutionGenerator.js';
 
 // The Scene contains all the elements
 const scene = new THREE.Scene();
@@ -23,14 +27,29 @@ generateHelpers(scene, SceneConfig.GRID_SIZE);
 // const shelf = new Shelf(1.0, 0.2, 1.4); // default 2x8
 // scene.add(shelf.generate());
 
-const impresora = new TridimensionalPrinter();
-const mesh = impresora.generate();
-scene.add(mesh);
+// const impresora = new TridimensionalPrinter();
+// const mesh = impresora.generate();
+// scene.add(mesh);
+
+// const originalCurve = curves.A2();
+// const scaledCurve = rescaleCurve(originalCurve, { maxWidth: 1, maxHeight: 1, center: false });
+// const flattenedCurve = flattenCatmullSegments(scaledCurve)
+// const generator = new RevolutionGenerator(1, 50);
+// const geometry = generator.generateGeometry(flattenedCurve);
+// const meshNormalMaterial = new THREE.MeshNormalMaterial();
+// const frankenstein = new THREE.Mesh(geometry, meshNormalMaterial)
+// scene.add(frankenstein)
 
 
+const originalCurve = curves.B3();
+const scaledCurve = rescaleCurve(originalCurve, { maxWidth: 1, maxHeight: 1, center: true });
+const flattenedCurve = flattenCatmullSegments(scaledCurve)
 
-
-
+const generator = new SweepGenerator(1, Math.PI, 50);
+const geometry = generator.generateGeometry(flattenedCurve);
+const meshNormalMaterial = new THREE.MeshNormalMaterial();
+const frankenstein = new THREE.Mesh(geometry, meshNormalMaterial)
+scene.add(frankenstein)
 
 
 

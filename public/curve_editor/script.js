@@ -16,6 +16,11 @@ function updateCameraBounds() {
     camera.updateProjectionMatrix();
 }
 
+const centerPointM = new THREE.MeshNormalMaterial();
+const centerPointG = new THREE.SphereGeometry(0.1, 32);
+const centerPoint = new THREE.Mesh(centerPointG, centerPointM);
+scene.add(centerPoint)
+
 const camera = new THREE.OrthographicCamera(-viewSize * aspect, viewSize * aspect, viewSize, -viewSize, 1, 1000);
 camera.position.set(0, 0, 100);
 camera.lookAt(0, 0, 0);
@@ -214,6 +219,25 @@ window.addEventListener('keydown', (e) => {
         showBezier = true;
         updateCurves();
     }
+
+    if (e.key === 'Backspace') {
+        // Prevent browser from navigating back
+        e.preventDefault();
+
+        if (curvesPoints.length === 0) return;
+
+        let lastCurve = curvesPoints[curvesPoints.length - 1];
+        if (lastCurve.length > 0) {
+            const meshToRemove = pointMeshes.pop();
+            scene.remove(meshToRemove);
+            lastCurve.pop();
+            updateCurves();
+        } else {
+            // If the current curve is empty, remove it entirely
+            curvesPoints.pop();
+        }
+    }
+
 });
 
 window.addEventListener('mousedown', onMouseDown);

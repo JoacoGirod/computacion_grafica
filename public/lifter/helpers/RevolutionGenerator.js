@@ -34,8 +34,11 @@ export class RevolutionGenerator {
                 const v1 = base + j + 1;
                 const v2 = nextBase + j + 1;
                 const v3 = nextBase + j;
-                faces.push([v0, v2, v1]);
-                faces.push([v0, v3, v2]);
+                faces.push([v0, v1, v2]); // triangle 1
+                faces.push([v0, v2, v3]); // triangle 2
+
+                // faces.push([v0, v2, v1]);
+                // faces.push([v0, v3, v2]);
 
             }
         }
