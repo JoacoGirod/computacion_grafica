@@ -31,7 +31,7 @@ generateHelpers(scene, SceneConfig.GRID_SIZE);
 // const mesh = impresora.generate();
 // scene.add(mesh);
 
-// const originalCurve = curves.A2();
+// const originalCurve = curves.A4();
 // const scaledCurve = rescaleCurve(originalCurve, { maxWidth: 1, maxHeight: 1, center: false });
 // const flattenedCurve = flattenCatmullSegments(scaledCurve)
 // const generator = new RevolutionGenerator(1, 50);
@@ -41,11 +41,11 @@ generateHelpers(scene, SceneConfig.GRID_SIZE);
 // scene.add(frankenstein)
 
 
-const originalCurve = curves.B3();
+const originalCurve = curves.B1();
 const scaledCurve = rescaleCurve(originalCurve, { maxWidth: 1, maxHeight: 1, center: true });
 const flattenedCurve = flattenCatmullSegments(scaledCurve)
 
-const generator = new SweepGenerator(1, Math.PI, 50);
+const generator = new SweepGenerator(5, Math.PI, 50);
 const geometry = generator.generateGeometry(flattenedCurve);
 const meshNormalMaterial = new THREE.MeshNormalMaterial();
 const frankenstein = new THREE.Mesh(geometry, meshNormalMaterial)
