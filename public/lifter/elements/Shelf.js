@@ -1,70 +1,65 @@
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
 export class Shelf {
-    constructor(
-        yInferiorOffset,
-        ySuperiorOffset,
-        planeFactor,
-        cols = 8,
-        rows = 2,
-        quadrantX = 2,
-        quadrantY = 2.5,
-        quadrantZ = 1,
-        separatorHeight = 0.1
-    ) {
-        this.yInferiorOffset = yInferiorOffset;
-        this.ySuperiorOffset = ySuperiorOffset;
-        this.planeFactor = planeFactor;
-        this.rows = rows; // vertical (Y-axis)
-        this.cols = cols; // horizontal (X-axis)
-        this.quadrantX = quadrantX;
-        this.quadrantY = quadrantY;
-        this.quadrantZ = quadrantZ;
-        this.separatorHeight = separatorHeight;
+    constructor(config = {}) {
+        // Optional Input
+        this.rows = config.rows ?? 2;
+        this.cols = config.cols ?? 8;
+        this.quadrantScale = config.quadrantScale ?? new THREE.Vector3(1, 1, 1);
 
-        // matrix[col][row] — row is vertical position
-        this.matrix = Array.from({ length: cols }, () =>
-            Array(rows).fill(null)
+        // Derived values
+        this.separatorHeight = 0.1 * this.quadrantScale.y;
+        this.yInferiorOffset = this.quadrantScale.y * 0.5;
+        this.ySuperiorOffset = this.quadrantScale.y * 0.5;
+
+        // Shelf state
+        this.matrix = Array.from({ length: this.cols }, () =>
+            Array(this.rows).fill(null)
         );
 
         this.group = new THREE.Group();
     }
 
     generate() {
+        const qx = this.quadrantScale.x;
+        const qy = this.quadrantScale.y;
+        const qz = this.quadrantScale.z;
+
         const totalHeight =
             this.yInferiorOffset +
-            this.rows * (this.quadrantY + this.separatorHeight) +
+            this.rows * (qy + this.separatorHeight) +
             this.ySuperiorOffset;
 
-        // Create poles at every column (left/right) and every row level (vertical)
-        const poleMaterial = new THREE.MeshNormalMaterial();
+        // Create vertical poles
         const poleGeometry = new THREE.BoxGeometry(0.05, totalHeight, 0.05);
+        const poleMaterial = new THREE.MeshNormalMaterial();
 
-        for (let col = 0; col < this.cols; col++) {
-            const x = col * this.quadrantX;
-            for (let depth of [0, this.quadrantZ]) { // mini two item array
+        for (let col = 0; col < this.cols + 1; col++) {
+            const x = col * qx;
+            for (let depth of [0, qz]) {
                 const pole = new THREE.Mesh(poleGeometry, poleMaterial);
+                pole.scale.copy(new THREE.Vector3(this.quadrantScale.x, 1, this.quadrantScale.z))
                 pole.position.set(x, totalHeight / 2, depth);
                 this.group.add(pole);
             }
         }
 
-        // Add horizontal shelf levels
-        const levelMaterial = new THREE.MeshNormalMaterial();
+        // Create horizontal shelves
         const levelGeometry = new THREE.BoxGeometry(
-            this.cols * this.quadrantX,
+            this.cols * qx,
             this.separatorHeight,
-            this.quadrantZ * this.planeFactor
+            qz
         );
+        const levelMaterial = new THREE.MeshNormalMaterial();
 
         for (let row = 0; row <= this.rows; row++) {
-            const y = this.yInferiorOffset + row * (this.quadrantY + this.separatorHeight);
-
+            const y = this.yInferiorOffset + row * (qy + this.separatorHeight);
             const level = new THREE.Mesh(levelGeometry, levelMaterial);
+            level.scale.copy(new THREE.Vector3(1.1, 1, 1.2))
             level.position.set(
-                (this.cols * this.quadrantX) / 2 - this.quadrantX / 2,
+                (this.cols * qx) / 2,
                 y,
-                this.quadrantZ / 2
+                qz / 2
             );
             this.group.add(level);
         }
@@ -73,13 +68,16 @@ export class Shelf {
     }
 
     placeModelIfClose(model, coordinate, threshold = 0.5) {
+        const qx = this.quadrantScale.x;
+        const qy = this.quadrantScale.y;
+
         for (let col = 0; col < this.cols; col++) {
             for (let row = 0; row < this.rows; row++) {
                 if (this.matrix[col][row]) continue;
 
                 const pos = new THREE.Vector3(
-                    col * this.quadrantX,
-                    this.yInferiorOffset + row * (this.quadrantY + this.separatorHeight),
+                    col * qx,
+                    this.yInferiorOffset + row * (qy + this.separatorHeight),
                     0
                 );
 

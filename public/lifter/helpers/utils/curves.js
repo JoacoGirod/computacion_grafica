@@ -68,9 +68,7 @@ export function flattenCatmullSegments(catmullSegments, pointsPerSegment = 20, c
     return curvePoints;
 }
 
-
 export function rescaleCurve(curves, { maxWidth, maxHeight, center = true }) {
-    // Flatten all points to find bounding box
     const allPoints = curves.flat();
     const xs = allPoints.map(p => p.x);
     const ys = allPoints.map(p => p.y);
@@ -83,13 +81,11 @@ export function rescaleCurve(curves, { maxWidth, maxHeight, center = true }) {
     const width = maxX - minX;
     const height = maxY - minY;
 
-    let scale = 1;
-    if (maxWidth && width > 0) {
-        scale = Math.min(scale, maxWidth / width);
-    }
-    if (maxHeight && height > 0) {
-        scale = Math.min(scale, maxHeight / height);
-    }
+    let scaleX = maxWidth ? maxWidth / width : 1;
+    let scaleY = maxHeight ? maxHeight / height : 1;
+    let scale = Math.max(scaleX, scaleY);
+    console.log(scale);
+
 
     const offsetX = center ? (minX + maxX) / 2 : 0;
     const offsetY = center ? (minY + maxY) / 2 : 0;

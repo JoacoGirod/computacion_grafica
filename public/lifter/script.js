@@ -23,13 +23,12 @@ document.body.appendChild(renderer.domElement);
 // Magic
 generateHelpers(scene, SceneConfig.GRID_SIZE);
 
-// TODO Take all parameters into a main config, maybe add more values, use objects?
-// const shelf = new Shelf(1.0, 0.2, 1.4); // default 2x8
-// scene.add(shelf.generate());
 
-// const impresora = new TridimensionalPrinter();
-// const mesh = impresora.generate();
-// scene.add(mesh);
+const shelf = new Shelf({ quadrantScale: new THREE.Vector3(1, 1, 1), });
+scene.add(shelf.generate());
+
+const tridimensionalPrinter = new TridimensionalPrinter({ scale: new THREE.Vector3(3, 3, 3) })
+scene.add(tridimensionalPrinter.generate())
 
 // const originalCurve = curves.A4();
 // const scaledCurve = rescaleCurve(originalCurve, { maxWidth: 1, maxHeight: 1, center: false });
@@ -41,15 +40,17 @@ generateHelpers(scene, SceneConfig.GRID_SIZE);
 // scene.add(frankenstein)
 
 
-const originalCurve = curves.B1();
-const scaledCurve = rescaleCurve(originalCurve, { maxWidth: 1, maxHeight: 1, center: true });
-const flattenedCurve = flattenCatmullSegments(scaledCurve)
+// const originalCurve = curves.B1();
+// const scaledCurve = rescaleCurve(originalCurve, { maxWidth: 1, maxHeight: 1, center: true });
+// const flattenedCurve = flattenCatmullSegments(scaledCurve)
 
-const generator = new SweepGenerator(5, Math.PI, 50);
-const geometry = generator.generateGeometry(flattenedCurve);
-const meshNormalMaterial = new THREE.MeshNormalMaterial();
-const frankenstein = new THREE.Mesh(geometry, meshNormalMaterial)
-scene.add(frankenstein)
+// const generator = new SweepGenerator(5, Math.PI, 50);
+// const geometry = generator.generateGeometry(flattenedCurve);
+// const meshNormalMaterial = new THREE.MeshNormalMaterial();
+// const frankenstein = new THREE.Mesh(geometry, meshNormalMaterial)
+// scene.add(frankenstein)
+
+
 
 
 
