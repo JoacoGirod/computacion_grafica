@@ -284,10 +284,4 @@ export const curves = {
             new THREE.Vector2(4, 11),
             new THREE.Vector2(0, 11)
         ]],
-    C1: () => [
-        [
-            new THREE.Vector2(0, 0),
-            new THREE.Vector2(5, 5),
-        ]
-    ],
 };

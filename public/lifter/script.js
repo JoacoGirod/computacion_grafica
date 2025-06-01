@@ -3,6 +3,7 @@ import { updateCamera, keys } from '../utils.js';
 import { SceneConfig } from './configs/BaseConfig.js';
 import { TridimensionalPrinter } from './elements/TridimensionalPrinter.js';
 import { Shelf } from './elements/Shelf.js';
+import { Vehicle } from './elements/Vehicle.js';
 import { flattenBezierSegments, flattenCatmullSegments, rescaleCurve } from './helpers/utils/curves.js';
 import { generateHelpers } from './debug/Helpers.js';
 import { SweepGenerator } from './helpers/SweepGenerator.js';
@@ -24,12 +25,23 @@ document.body.appendChild(renderer.domElement);
 generateHelpers(scene, SceneConfig.GRID_SIZE);
 
 
-const shelf = new Shelf({ quadrantScale: new THREE.Vector3(1, 1, 1), });
-scene.add(shelf.generate());
+// =============== SCENE ================
+const shelfManager = new Shelf({ scale: new THREE.Vector3(4, 4, 4) });
+const shelfModel = shelfManager.generate()
+shelfModel.rotation.y = Math.PI / 2
+shelfModel.position.x = 20
+scene.add(shelfModel);
 
-const tridimensionalPrinter = new TridimensionalPrinter({ scale: new THREE.Vector3(3, 3, 3) })
-scene.add(tridimensionalPrinter.generate())
+const tridimensionalPrinterManager = new TridimensionalPrinter({ scale: new THREE.Vector3(1.5, 1.5, 1.5) })
+const tridimensionalPrinterModel = tridimensionalPrinterManager.generate()
+tridimensionalPrinterModel.position.x = -20
+scene.add(tridimensionalPrinterModel)
+//
+const vehicleManager = new Vehicle({ scale: new THREE.Vector3(1, 1, 1) })
+const vehicleModel = vehicleManager.generate()
+scene.add(vehicleModel)
 
+// =============== CURVES ================
 // const originalCurve = curves.A4();
 // const scaledCurve = rescaleCurve(originalCurve, { maxWidth: 1, maxHeight: 1, center: false });
 // const flattenedCurve = flattenCatmullSegments(scaledCurve)

@@ -1,19 +1,19 @@
 # TO DO
 ## High Priority
-- Create basic generate() for Vehicle
+- Fix scaling special scaling should not be necessary, take measurements using grid on images,
 - Implement Vehicle Movemenet
-- Create basic generate() for Printer
 - Implement Printing menu
 - Implement Object moving logic
-- Refine models
+- Refine models visually
+- shelf could be simplified
+- Make several cars?
 
 
 ## Low Priority
-- Centralize into a main config and use different Scalers
 - Transition generateHelpers() into a class
+- Transition so everything has config{} as parameter Scalers mainly
+
 - Comment everything with this convention
-- Rescaler is poorly written, maxHeight does nothing, should just rescale the all point in x and z direction
-- Transition so everything has config{} as parameter
 /**
  * Flattens an array of bezier segment definitions into a single array of [x, z] points
  * @param {Array<Array<string>>} bezierSegments - Each inner array is 2 or 3 Vector2 definitions

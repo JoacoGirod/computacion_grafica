@@ -5,12 +5,12 @@ export class Shelf {
         // Optional Input
         this.rows = config.rows ?? 2;
         this.cols = config.cols ?? 8;
-        this.quadrantScale = config.quadrantScale ?? new THREE.Vector3(1, 1, 1);
+        this.scale = config.scale ?? new THREE.Vector3(1, 1, 1);
 
         // Derived values
-        this.separatorHeight = 0.1 * this.quadrantScale.y;
-        this.yInferiorOffset = this.quadrantScale.y * 0.5;
-        this.ySuperiorOffset = this.quadrantScale.y * 0.5;
+        this.separatorHeight = 0.1 * this.scale.y;
+        this.yInferiorOffset = this.scale.y * 0.5;
+        this.ySuperiorOffset = this.scale.y * 0.5;
 
         // Shelf state
         this.matrix = Array.from({ length: this.cols }, () =>
@@ -21,40 +21,34 @@ export class Shelf {
     }
 
     generate() {
-        const qx = this.quadrantScale.x;
-        const qy = this.quadrantScale.y;
-        const qz = this.quadrantScale.z;
+        this.group.clear();
+
+        const normalMaterial = new THREE.MeshNormalMaterial();
+
+        const qx = this.scale.x;
+        const qy = this.scale.y;
+        const qz = this.scale.z;
 
         const totalHeight =
             this.yInferiorOffset +
             this.rows * (qy + this.separatorHeight) +
             this.ySuperiorOffset;
 
-        // Create vertical poles
-        const poleGeometry = new THREE.BoxGeometry(0.05, totalHeight, 0.05);
-        const poleMaterial = new THREE.MeshNormalMaterial();
-
+        // Poles
         for (let col = 0; col < this.cols + 1; col++) {
             const x = col * qx;
             for (let depth of [0, qz]) {
-                const pole = new THREE.Mesh(poleGeometry, poleMaterial);
-                pole.scale.copy(new THREE.Vector3(this.quadrantScale.x, 1, this.quadrantScale.z))
+                const pole = new THREE.Mesh(new THREE.BoxGeometry(0.05, totalHeight, 0.05), normalMaterial)
+                pole.scale.copy(new THREE.Vector3(this.scale.x, 1, this.scale.z))
                 pole.position.set(x, totalHeight / 2, depth);
                 this.group.add(pole);
             }
         }
 
-        // Create horizontal shelves
-        const levelGeometry = new THREE.BoxGeometry(
-            this.cols * qx,
-            this.separatorHeight,
-            qz
-        );
-        const levelMaterial = new THREE.MeshNormalMaterial();
-
+        // Planes
         for (let row = 0; row <= this.rows; row++) {
             const y = this.yInferiorOffset + row * (qy + this.separatorHeight);
-            const level = new THREE.Mesh(levelGeometry, levelMaterial);
+            const level = new THREE.Mesh(new THREE.BoxGeometry(this.cols * qx, this.separatorHeight, qz), normalMaterial);
             level.scale.copy(new THREE.Vector3(1.1, 1, 1.2))
             level.position.set(
                 (this.cols * qx) / 2,
@@ -64,12 +58,14 @@ export class Shelf {
             this.group.add(level);
         }
 
+        this.group.position.z = this.cols * qx / 2
+
         return this.group;
     }
 
     placeModelIfClose(model, coordinate, threshold = 0.5) {
-        const qx = this.quadrantScale.x;
-        const qy = this.quadrantScale.y;
+        const qx = this.scale.x;
+        const qy = this.scale.y;
 
         for (let col = 0; col < this.cols; col++) {
             for (let row = 0; row < this.rows; row++) {
