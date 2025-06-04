@@ -27,49 +27,40 @@ export class TridimensionalPrinter {
         const planeTopMesh = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.25, 1), normalMaterial)
 
         const handGroup = new THREE.Group()
-        handGroup.add(planeMesh)
-        handGroup.add(planeTopMesh)
+        handGroup.add(planeMesh, planeTopMesh)
 
         // Arms & Box
         const boxMesh = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.75), normalMaterial)
         const arm1Mesh = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.2, 0.1), normalMaterial);
-        arm1Mesh.position.x = 0.75
-        arm1Mesh.position.z = 0.1
+        arm1Mesh.position.x = 0.75; arm1Mesh.position.z = 0.1
 
         const arm2Mesh = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.2, 0.1), normalMaterial);
-        arm2Mesh.position.x = 0.75
-        arm2Mesh.position.z = -0.1
+        arm2Mesh.position.x = 0.75; arm2Mesh.position.z = -0.1
 
         const connectionGroup = new THREE.Group()
-        connectionGroup.add(boxMesh)
-        connectionGroup.add(arm1Mesh)
-        connectionGroup.add(arm2Mesh)
         handGroup.position.x = 1.5
-        connectionGroup.add(handGroup)
+        connectionGroup.add(boxMesh, arm1Mesh, arm2Mesh, handGroup)
 
         // Elevating bar
         const barMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 7), normalMaterial)
         barMesh.position.y = 3.5
 
         const barGroup = new THREE.Group()
-        barGroup.add(barMesh)
         connectionGroup.position.y = 6 // THIS MOVES THE ARM
-        barGroup.add(connectionGroup)
+        barGroup.add(barMesh, connectionGroup)
 
         // Base
         const baseCurve = [
             [0.0, 1.6], [1.2, 1.6], [1.4, 2.0],
             [1.6, 2.0], [1.8, 1.6], [1.8, 0.0], [0.0, 0.0]
         ].map(([x, y]) => new THREE.Vector2(x, y));
-        const scaledCurve = rescaleCurve([baseCurve], { maxWidth: 3, center: false })[0];
-        console.log(scaledCurve);
 
         const revGen = new RevolutionGenerator(1, this.revolutionSteps);
         const baseMesh = new THREE.Mesh(revGen.generateGeometry(baseCurve), normalMaterial);
 
-        this.group.add(baseMesh)
         barGroup.position.x = -1.5
-        this.group.add(barGroup)
+        this.group.add(baseMesh)
+        this.group.add(baseMesh, barGroup)
 
         this.group.scale.copy(this.scale);
 

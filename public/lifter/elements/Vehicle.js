@@ -5,6 +5,8 @@ export class Vehicle {
         // Model Generation
         this.scale = config.scale || new THREE.Vector3(1, 1, 1);
         this.group = new THREE.Group(); // all 3D parts here
+        this.wheels = [];
+        this.plane = null; // Moving plane
     }
 
     generate() {
@@ -14,78 +16,115 @@ export class Vehicle {
 
         // Rails
         const rail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 7, 0.3), normalMaterial)
+        rail1.position.y = 3.5; rail1.position.z = 0.75
         const rail2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 7, 0.3), normalMaterial)
-        rail1.position.z = 0.75
-        rail1.position.y = 3.5
-        rail2.position.z = -0.75
-        rail2.position.y = 3.5
+        rail2.position.y = 3.5; rail2.position.z = -0.75
 
         // Cross Rails
         const crossRail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
+        crossRail1.position.x = 0.05; crossRail1.position.y = 0.5
         const crossRail2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
+        crossRail2.position.x = 0.05; crossRail2.position.y = 3.66
         const crossRail3 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
-        crossRail1.position.x = 0.05
-        crossRail1.position.y = 0.5
-        crossRail2.position.x = 0.05
-        crossRail2.position.y = 3.66
-        crossRail3.position.x = 0.05
-        crossRail3.position.y = 6.8
+        crossRail3.position.x = 0.05; crossRail3.position.y = 6.8
 
         // Plane
-        const plane = new THREE.Mesh(new THREE.BoxGeometry(2, 0.1, 1.5), normalMaterial)
-        plane.position.x = -1
-        plane.position.y = 2
+        this.plane = new THREE.Mesh(new THREE.BoxGeometry(2, 0.1, 1.5), normalMaterial)
+        this.plane.position.x = -1; this.plane.position.y = 2
 
         const railGroup = new THREE.Group()
-        railGroup.add(rail1)
-        railGroup.add(rail2)
-        railGroup.add(crossRail1)
-        railGroup.add(crossRail2)
-        railGroup.add(crossRail3)
-        railGroup.add(plane)
+        railGroup.add(rail1, rail2, crossRail1, crossRail2, crossRail3, this.plane)
         railGroup.position.y = 0.5
 
         // Vehicle Body
         const body = new THREE.Mesh(new THREE.BoxGeometry(3.8, 1, 2), normalMaterial)
-        body.position.x = 3.8 / 2 + 0.05
-        body.position.y = 0.5 + 1.25 / 2
+        body.position.x = 3.8 / 2 + 0.05; body.position.y = 0.5 + 1.25 / 2
 
         // Wheels
         const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.25), normalMaterial)
         wheel.rotation.x = Math.PI / 2
         const wheelDecoration = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.1, 0.1), normalMaterial)
         wheelDecoration.position.z = 0.25;
+
         const wheel1Group = new THREE.Group()
-        wheel1Group.add(wheel)
-        wheel1Group.add(wheelDecoration)
+        wheel1Group.add(wheel, wheelDecoration)
         wheel1Group.position.y = 0.5
+
         const wheel2Group = wheel1Group.clone()
         const wheel3Group = wheel1Group.clone();
-        wheel3Group.scale.copy(new THREE.Vector3(-1, -1, -1));
+        wheel3Group.scale.copy(new THREE.Vector3(1, -1, -1));
         const wheel4Group = wheel1Group.clone();
-        wheel4Group.scale.copy(new THREE.Vector3(-1, -1, -1));
+        wheel4Group.scale.copy(new THREE.Vector3(1, -1, -1));
 
-        wheel1Group.position.x = 1
-        wheel1Group.position.z = 1
-        wheel2Group.position.x = 2.75
-        wheel2Group.position.z = 1
-        wheel3Group.position.x = 1
-        wheel3Group.position.z = -1
-        wheel4Group.position.x = 2.75
-        wheel4Group.position.z = -1
+        wheel1Group.position.x = 1; wheel1Group.position.z = 1
+        wheel2Group.position.x = 2.75; wheel2Group.position.z = 1
+        wheel3Group.position.x = 1; wheel3Group.position.z = -1
+        wheel4Group.position.x = 2.75; wheel4Group.position.z = -1
+
+        this.wheels.push(wheel1Group, wheel2Group, wheel3Group, wheel4Group)
 
         const carGroup = new THREE.Group()
-        carGroup.add(body)
-        carGroup.add(wheel1Group)
-        carGroup.add(wheel2Group)
-        carGroup.add(wheel3Group)
-        carGroup.add(wheel4Group)
+        carGroup.add(body, wheel1Group, wheel2Group, wheel3Group, wheel4Group)
 
-        this.group.add(railGroup)
-        this.group.add(carGroup)
+        this.group.add(railGroup, carGroup)
 
         this.group.scale.copy(this.scale);
 
         return this.group;
+    }
+
+    animate(keys) {
+        const speed = 0.05;
+        const rotationSpeed = 0.02;
+        const liftSpeed = 0.01;
+        const maxLift = 7;
+        const minLift = 0;
+
+        let moved = false;
+        let deltaX = 0;
+
+        // FORWARD
+        if (keys['KeyW']) {
+            this.group.translateX(-speed);
+            deltaX = speed;
+            moved = true;
+        }
+        // BACKWARD
+        if (keys['KeyS']) {
+            this.group.translateX(speed);
+            deltaX = -speed;
+            moved = true;
+        }
+        // LEFT
+        if (keys['KeyA']) {
+            this.group.rotateY(rotationSpeed);
+        }
+        // RIGHT
+        if (keys['KeyD']) {
+            this.group.rotateY(-rotationSpeed);
+        }
+
+        // UP - Q
+        if (keys['KeyQ'] && this.plane) {
+            this.plane.position.y = Math.min(maxLift, this.plane.position.y + liftSpeed);
+        }
+
+        // DOWN - E
+        if (keys['KeyE'] && this.plane) {
+            this.plane.position.y = Math.max(minLift, this.plane.position.y - liftSpeed);
+        }
+
+        // If moved, rotate wheels
+        if (moved) {
+            const wheelRotation = deltaX / 0.5; // approx 1 rotation per ~0.5 units
+            this._rotateWheels(wheelRotation);
+        }
+    }
+
+    _rotateWheels(amount) {
+        if (!this.wheels) return;
+        for (const wheel of this.wheels) {
+            wheel.rotation.z += amount;
+        }
     }
 }
