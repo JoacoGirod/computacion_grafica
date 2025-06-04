@@ -8,9 +8,9 @@ export class Shelf {
         this.scale = config.scale ?? new THREE.Vector3(1, 1, 1);
 
         // Derived values
-        this.separatorHeight = 0.1 * this.scale.y;
-        this.yInferiorOffset = this.scale.y * 0.5;
-        this.ySuperiorOffset = this.scale.y * 0.5;
+        this.separatorHeight = 0.15;
+        this.yInferiorOffset = 2.2;
+        this.ySuperiorOffset = 0.2;
 
         // Shelf state
         this.matrix = Array.from({ length: this.cols }, () =>
@@ -25,9 +25,9 @@ export class Shelf {
 
         const normalMaterial = new THREE.MeshNormalMaterial();
 
-        const qx = this.scale.x;
-        const qy = this.scale.y;
-        const qz = this.scale.z;
+        const qx = 2;
+        const qy = 3.2;
+        const qz = 1.5;
 
         const totalHeight =
             this.yInferiorOffset +
@@ -38,7 +38,7 @@ export class Shelf {
         for (let col = 0; col < this.cols + 1; col++) {
             const x = col * qx;
             for (let depth of [0, qz]) {
-                const pole = new THREE.Mesh(new THREE.BoxGeometry(0.05, totalHeight, 0.05), normalMaterial)
+                const pole = new THREE.Mesh(new THREE.BoxGeometry(0.2, totalHeight, 0.2), normalMaterial)
                 pole.scale.copy(new THREE.Vector3(this.scale.x, 1, this.scale.z))
                 pole.position.set(x, totalHeight / 2, depth);
                 this.group.add(pole);
@@ -49,7 +49,7 @@ export class Shelf {
         for (let row = 0; row <= this.rows; row++) {
             const y = this.yInferiorOffset + row * (qy + this.separatorHeight);
             const level = new THREE.Mesh(new THREE.BoxGeometry(this.cols * qx, this.separatorHeight, qz), normalMaterial);
-            level.scale.copy(new THREE.Vector3(1.1, 1, 1.2))
+            level.scale.copy(new THREE.Vector3(1.1, 1, 1.5))
             level.position.set(
                 (this.cols * qx) / 2,
                 y,

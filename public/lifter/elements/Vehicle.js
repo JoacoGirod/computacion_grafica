@@ -13,28 +13,28 @@ export class Vehicle {
         const normalMaterial = new THREE.MeshNormalMaterial()
 
         // Rails
-        const rail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 10, 0.3), normalMaterial)
-        const rail2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 10, 0.3), normalMaterial)
-        rail1.position.z = 1
-        rail1.position.y = 5
-        rail2.position.z = -1
-        rail2.position.y = 5
+        const rail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 7, 0.3), normalMaterial)
+        const rail2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 7, 0.3), normalMaterial)
+        rail1.position.z = 0.75
+        rail1.position.y = 3.5
+        rail2.position.z = -0.75
+        rail2.position.y = 3.5
 
         // Cross Rails
-        const crossRail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2.4), normalMaterial)
-        const crossRail2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2.4), normalMaterial)
-        const crossRail3 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2.4), normalMaterial)
+        const crossRail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
+        const crossRail2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
+        const crossRail3 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
         crossRail1.position.x = 0.05
-        crossRail1.position.y = 1
+        crossRail1.position.y = 0.5
         crossRail2.position.x = 0.05
-        crossRail2.position.y = 5
+        crossRail2.position.y = 3.66
         crossRail3.position.x = 0.05
-        crossRail3.position.y = 9.6
+        crossRail3.position.y = 6.8
 
         // Plane
-        const plane = new THREE.Mesh(new THREE.BoxGeometry(3.25, 0.1, 2.75), normalMaterial)
-        plane.position.x = -3.25 / 2
-        plane.position.y = 3
+        const plane = new THREE.Mesh(new THREE.BoxGeometry(2, 0.1, 1.5), normalMaterial)
+        plane.position.x = -1
+        plane.position.y = 2
 
         const railGroup = new THREE.Group()
         railGroup.add(rail1)
@@ -46,33 +46,33 @@ export class Vehicle {
         railGroup.position.y = 0.5
 
         // Vehicle Body
-        const body = new THREE.Mesh(new THREE.BoxGeometry(8, 1.75, 4), normalMaterial)
-        body.position.x = 4
-        body.position.y = 2
+        const body = new THREE.Mesh(new THREE.BoxGeometry(3.8, 1, 2), normalMaterial)
+        body.position.x = 3.8 / 2 + 0.05
+        body.position.y = 0.5 + 1.25 / 2
 
         // Wheels
-        const wheel = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.25), normalMaterial)
+        const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.25), normalMaterial)
         wheel.rotation.x = Math.PI / 2
-        const wheelDecoration = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.1, 0.1), normalMaterial)
+        const wheelDecoration = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.1, 0.1), normalMaterial)
         wheelDecoration.position.z = 0.25;
         const wheel1Group = new THREE.Group()
         wheel1Group.add(wheel)
         wheel1Group.add(wheelDecoration)
-        wheel1Group.position.y = 1
+        wheel1Group.position.y = 0.5
         const wheel2Group = wheel1Group.clone()
         const wheel3Group = wheel1Group.clone();
         wheel3Group.scale.copy(new THREE.Vector3(-1, -1, -1));
         const wheel4Group = wheel1Group.clone();
         wheel4Group.scale.copy(new THREE.Vector3(-1, -1, -1));
 
-        wheel1Group.position.x = 2
-        wheel1Group.position.z = 2.25
-        wheel2Group.position.x = 6
-        wheel2Group.position.z = 2.25
-        wheel3Group.position.x = 2
-        wheel3Group.position.z = -2.25
-        wheel4Group.position.x = 6
-        wheel4Group.position.z = -2.25
+        wheel1Group.position.x = 1
+        wheel1Group.position.z = 1
+        wheel2Group.position.x = 2.75
+        wheel2Group.position.z = 1
+        wheel3Group.position.x = 1
+        wheel3Group.position.z = -1
+        wheel4Group.position.x = 2.75
+        wheel4Group.position.z = -1
 
         const carGroup = new THREE.Group()
         carGroup.add(body)

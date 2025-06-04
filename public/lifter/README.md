@@ -1,5 +1,6 @@
 # TO DO
 ## High Priority
+- El scaling de puntos en las curvas no se puede hacer con el .scale?
 - Fix scaling special scaling should not be necessary, take measurements using grid on images,
 - Implement Vehicle Movemenet
 - Implement Printing menu

@@ -26,18 +26,18 @@ generateHelpers(scene, SceneConfig.GRID_SIZE);
 
 
 // =============== SCENE ================
-const shelfManager = new Shelf({ scale: new THREE.Vector3(4, 4, 4) });
+const shelfManager = new Shelf();
 const shelfModel = shelfManager.generate()
 shelfModel.rotation.y = Math.PI / 2
 shelfModel.position.x = 20
 scene.add(shelfModel);
 
-const tridimensionalPrinterManager = new TridimensionalPrinter({ scale: new THREE.Vector3(1.5, 1.5, 1.5) })
+const tridimensionalPrinterManager = new TridimensionalPrinter()
 const tridimensionalPrinterModel = tridimensionalPrinterManager.generate()
 tridimensionalPrinterModel.position.x = -20
 scene.add(tridimensionalPrinterModel)
 //
-const vehicleManager = new Vehicle({ scale: new THREE.Vector3(1, 1, 1) })
+const vehicleManager = new Vehicle()
 const vehicleModel = vehicleManager.generate()
 scene.add(vehicleModel)
 
