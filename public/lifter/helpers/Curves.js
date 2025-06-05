@@ -4,11 +4,11 @@ export const baseCurves = new Map([
     ['A1', {
         type: 'catmull',
         segments: [
-            [new THREE.Vector2(0, 14), new THREE.Vector2(-6, 14)],
-            [new THREE.Vector2(-6, 14), new THREE.Vector2(-6, 12)],
-            [new THREE.Vector2(-6, 12), new THREE.Vector2(-1, 11), new THREE.Vector2(-3, 10), new THREE.Vector2(-4, 7), new THREE.Vector2(-3, 4), new THREE.Vector2(-1, 3), new THREE.Vector2(-6, 2)],
-            [new THREE.Vector2(-6, 2), new THREE.Vector2(-6, 0)],
-            [new THREE.Vector2(-6, 0), new THREE.Vector2(0, 0)],
+            [new THREE.Vector2(0, 21), new THREE.Vector2(-7, 21)],
+            [new THREE.Vector2(-7, 21), new THREE.Vector2(-7, 18)],
+            [new THREE.Vector2(-7, 18), new THREE.Vector2(-2, 16), new THREE.Vector2(-4, 14), new THREE.Vector2(-5, 11), new THREE.Vector2(-4, 8), new THREE.Vector2(-2, 6), new THREE.Vector2(-7, 4)],
+            [new THREE.Vector2(-7, 4), new THREE.Vector2(-7, 0)],
+            [new THREE.Vector2(-7, 0), new THREE.Vector2(0, 0)]
         ]
     }],
     ['A2', {
@@ -32,8 +32,8 @@ export const baseCurves = new Map([
     ['A4', {
         type: 'catmull',
         segments: [
-            [new THREE.Vector2(-1, 30), new THREE.Vector2(-5, 29), new THREE.Vector2(-7, 27), new THREE.Vector2(-8, 24), new THREE.Vector2(-8, 21), new THREE.Vector2(-9, 18), new THREE.Vector2(-19, 15)],
-            [new THREE.Vector2(-19, 15), new THREE.Vector2(-9, 13), new THREE.Vector2(-5, 11), new THREE.Vector2(-5, 7), new THREE.Vector2(-10, 6), new THREE.Vector2(-11, 3), new THREE.Vector2(-10, 1), new THREE.Vector2(0, 0)],
+            [new THREE.Vector2(-1, 19), new THREE.Vector2(-3, 18), new THREE.Vector2(-4, 17), new THREE.Vector2(-5, 15), new THREE.Vector2(-5, 13), new THREE.Vector2(-6, 11), new THREE.Vector2(-11, 10)],
+            [new THREE.Vector2(-11, 10), new THREE.Vector2(-5, 9), new THREE.Vector2(-3, 7), new THREE.Vector2(-3, 4), new THREE.Vector2(-7, 3), new THREE.Vector2(-7, 1), new THREE.Vector2(-5, 0), new THREE.Vector2(0, 0)]
         ]
     }],
     ['B1', {
@@ -214,38 +214,38 @@ export function rescaleCurve(
     );
 }
 
-export function rescaleCurve(curves, { maxWidth, maxHeight, center = true }) {
-    const allPoints = curves.flat();
-    const xs = allPoints.map(p => p.x);
-    const ys = allPoints.map(p => p.y);
+// export function rescaleCurve(curves, { maxWidth, maxHeight, center = true }) {
+//     const allPoints = curves.flat();
+//     const xs = allPoints.map(p => p.x);
+//     const ys = allPoints.map(p => p.y);
 
-    const minX = Math.min(...xs);
-    const maxX = Math.max(...xs);
-    const minY = Math.min(...ys);
-    const maxY = Math.max(...ys);
+//     const minX = Math.min(...xs);
+//     const maxX = Math.max(...xs);
+//     const minY = Math.min(...ys);
+//     const maxY = Math.max(...ys);
 
-    const width = maxX - minX;
-    const height = maxY - minY;
+//     const width = maxX - minX;
+//     const height = maxY - minY;
 
-    let scaleX = maxWidth ? maxWidth / width : 1;
-    let scaleY = maxHeight ? maxHeight / height : 1;
-    let scale = Math.max(scaleX, scaleY);
+//     let scaleX = maxWidth ? maxWidth / width : 1;
+//     let scaleY = maxHeight ? maxHeight / height : 1;
+//     let scale = Math.max(scaleX, scaleY);
 
-    const centroidX = xs.reduce((a, b) => a + b, 0) / xs.length;
-    const centroidY = ys.reduce((a, b) => a + b, 0) / ys.length;
+//     const centroidX = xs.reduce((a, b) => a + b, 0) / xs.length;
+//     const centroidY = ys.reduce((a, b) => a + b, 0) / ys.length;
 
-    const offsetX = center ? centroidX : 0;
-    const offsetY = center ? centroidY : 0;
+//     const offsetX = center ? centroidX : 0;
+//     const offsetY = center ? centroidY : 0;
 
-    return curves.map(curve =>
-        curve.map(p =>
-            new THREE.Vector2(
-                (p.x - offsetX) * scale,
-                (p.y - offsetY) * scale
-            )
-        )
-    );
-}
+//     return curves.map(curve =>
+//         curve.map(p =>
+//             new THREE.Vector2(
+//                 (p.x - offsetX) * scale,
+//                 (p.y - offsetY) * scale
+//             )
+//         )
+//     );
+// }
 
 
 // export function rescaleCurve(curves, { maxWidth, maxHeight, center = true }) {

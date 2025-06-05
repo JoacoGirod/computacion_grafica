@@ -60,31 +60,60 @@ export class Shelf {
 
         this.group.position.z = this.cols * qx / 2
 
+        this.group.rotation.y = Math.PI / 2;
         return this.group;
     }
 
-    placeModelIfClose(model, coordinate, threshold = 0.5) {
-        const qx = this.scale.x;
-        const qy = this.scale.y;
+    placeModelIfClose(planePosition, model, threshold = 0.5) {
+        if (!model) return false;
 
+
+        console.log(planePosition);
+
+        // We will reuse the same constants as in generate().
+        const qx = 2;
+        const qy = 3.2;
+        const qz = 1.5;
+
+        // For each possible column/row:
         for (let col = 0; col < this.cols; col++) {
             for (let row = 0; row < this.rows; row++) {
-                if (this.matrix[col][row]) continue;
+                // If already occupied, skip:
+                if (this.matrix[col][row] !== null) continue;
 
-                const pos = new THREE.Vector3(
-                    col * qx,
+                // Compute that cell’s *local* center (before transformations):
+                //  - X direction: center of the “bin” is at (col + 0.5) * qx
+                //  - Y direction: bottom offset + row*(qy+sep) + qy/2
+                //  - Z direction: halfway into the shelf depth: qz/2
+                const localCenter = new THREE.Vector3(
+                    (col + 0.5) * qx,
                     this.yInferiorOffset + row * (qy + this.separatorHeight),
-                    0
+                    qz / 2
                 );
 
-                if (pos.distanceTo(coordinate) < threshold) {
-                    model.position.copy(pos);
+                // Convert that local center to *world* space:
+                const worldCenter = localCenter.clone();
+                this.group.localToWorld(worldCenter);
+
+                // Compute Euclidean distance to our model’s world‐pos:
+                const dist = worldCenter.distanceTo(planePosition);
+                if (dist <= threshold) {
+                    // We can “snap” it into this cell:
+                    // 1) Reparent under this.group:
                     this.group.add(model);
+
+                    // 2) But model’s position must become exactly localCenter:
+                    //    To do that, we can invert the world transform:
+                    model.position.copy(localCenter);
+
+                    // 3) Mark the matrix cell as occupied:
                     this.matrix[col][row] = model;
                     return true;
                 }
             }
         }
+
+        // No cell was close enough / empty
         return false;
     }
 }

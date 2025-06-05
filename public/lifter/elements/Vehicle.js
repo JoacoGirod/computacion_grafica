@@ -7,6 +7,7 @@ export class Vehicle {
         this.group = new THREE.Group(); // all 3D parts here
         this.wheels = [];
         this.plane = null; // Moving plane
+        this.heldObject = null;
     }
 
     generate() {
@@ -73,6 +74,9 @@ export class Vehicle {
         return this.group;
     }
 
+    /**
+   * Call this every frame to respond to user input
+   */
     animate(keys) {
         const speed = 0.05;
         const rotationSpeed = 0.02;
@@ -95,36 +99,61 @@ export class Vehicle {
             deltaX = -speed;
             moved = true;
         }
-        // LEFT
+        // TURN LEFT
         if (keys['KeyA']) {
             this.group.rotateY(rotationSpeed);
         }
-        // RIGHT
+        // TURN RIGHT
         if (keys['KeyD']) {
             this.group.rotateY(-rotationSpeed);
         }
 
-        // UP - Q
+        // LIFT the plane (Q/E)
         if (keys['KeyQ'] && this.plane) {
             this.plane.position.y = Math.min(maxLift, this.plane.position.y + liftSpeed);
         }
-
-        // DOWN - E
         if (keys['KeyE'] && this.plane) {
             this.plane.position.y = Math.max(minLift, this.plane.position.y - liftSpeed);
         }
 
-        // If moved, rotate wheels
+        // Rotate wheels if we moved
         if (moved) {
-            const wheelRotation = deltaX / 0.5; // approx 1 rotation per ~0.5 units
+            const wheelRotation = deltaX / 0.5; // approximate
             this._rotateWheels(wheelRotation);
+        }
+
+        // If we are holding something, keep it “attached” to the plane:
+        if (this.heldObject) {
+            this.heldObject.position.set(0, 0.05, 0); // sits slightly above the plane
         }
     }
 
     _rotateWheels(amount) {
-        if (!this.wheels) return;
         for (const wheel of this.wheels) {
             wheel.rotation.z += amount;
         }
+    }
+
+    pickUpObject(mesh) {
+        if (!mesh || this.heldObject) return false;
+        // Parent it to the plane:
+        this.plane.add(mesh);
+        mesh.position.set(0, 0.05, 0);
+        this.heldObject = mesh;
+        return true;
+    }
+
+    dropOffObject() {
+        console.log(this.heldObject);
+
+        if (!this.heldObject) return null;
+        const mesh = this.heldObject;
+        this.plane.remove(mesh);
+        this.heldObject = null;
+        return mesh;
+    }
+
+    isCarrying() {
+        return this.heldObject !== null;
     }
 }
