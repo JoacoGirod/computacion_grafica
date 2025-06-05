@@ -1,8 +1,7 @@
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 import { SweepGenerator } from '../helpers/SweepGenerator.js';
 import { RevolutionGenerator } from '../helpers/RevolutionGenerator.js';
-import { curves } from '../helpers/Curves.js';
-import { rescaleCurve } from '../helpers/utils/curves.js';
+import { baseCurves, flattenBezierSegments, flattenCatmullSegments, rescaleCurve } from '../helpers/Curves.js';
 
 export class TridimensionalPrinter {
     constructor(config = {}) {
@@ -55,7 +54,7 @@ export class TridimensionalPrinter {
             [1.6, 2.0], [1.8, 1.6], [1.8, 0.0], [0.0, 0.0]
         ].map(([x, y]) => new THREE.Vector2(x, y));
 
-        const revGen = new RevolutionGenerator(1, this.revolutionSteps);
+        const revGen = new RevolutionGenerator(this.revolutionSteps);
         const baseMesh = new THREE.Mesh(revGen.generateGeometry(baseCurve), normalMaterial);
 
         barGroup.position.x = -1.5
@@ -77,6 +76,7 @@ export class TridimensionalPrinter {
             alturaTotal
         } = menuValues;
 
+
         if (alturaTotal <= 0 || alturaTotal > this.maxHeight) {
             throw new Error("Altura inválida.");
         }
@@ -84,28 +84,41 @@ export class TridimensionalPrinter {
         const tipo = tipoSuperficie.toLowerCase();
         const curvaKey = tipo === "revolucion" ? forma2DRevolucion.toUpperCase() : forma2DBarrido.toUpperCase();
 
-        const curvaFn = curves[curvaKey];
-        if (!curvaFn) {
+        const baseCurve = baseCurves.get(curvaKey);
+        if (!baseCurve) {
             throw new Error(`Curva desconocida: ${curvaKey}`);
         }
+        console.log(baseCurve);
 
-        const curva = curvaFn();
+
 
         let generator;
+        let scaledCurve
         if (tipo === "revolucion") {
-            generator = new RevolutionGenerator(curva, alturaTotal, anguloTorsion, this.revolutionSteps);
+            scaledCurve = rescaleCurve(baseCurve.segments, { maxWidth: 1, maxHeight: alturaTotal, center: false, preserveAspect: false });
+            generator = new RevolutionGenerator(50);
         } else if (tipo === "barrido") {
-            generator = new SweepGenerator(curva, alturaTotal, anguloTorsion, this.sweepingSteps);
+            scaledCurve = rescaleCurve(baseCurve.segments, { maxWidth: 1, maxHeight: 1, center: true });
+            generator = new SweepGenerator(alturaTotal, anguloTorsion * 2 * Math.PI / 360, 50);
         } else {
             throw new Error(`Tipo de superficie inválido: ${tipoSuperficie}`);
         }
+        console.log(scaledCurve);
 
-        const { vertices, faces } = generator.generateGeometry();
-        const geometry = createGeometry(vertices, faces);
-        const mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color: 0xff5500 }));
 
-        // Position it just above the base
-        mesh.position.y = 0.2;
-        this.group.add(mesh);
+        let flattenedCurve;
+        if (baseCurve.type == "catmull") {
+            flattenedCurve = flattenCatmullSegments(scaledCurve)
+        }
+        else if (baseCurve.type == "bezier") {
+            flattenedCurve = flattenBezierSegments(scaledCurve)
+        }
+        console.log(flattenedCurve);
+
+        const geometry = generator.generateGeometry(flattenedCurve);
+        const frankenstein = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial())
+
+        frankenstein.position.y = 2;
+        this.group.add(frankenstein);
     }
 }

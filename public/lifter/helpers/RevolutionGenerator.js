@@ -1,8 +1,7 @@
 import { buildGeometry } from "./utils/buildGeometry.js";
 
 export class RevolutionGenerator {
-    constructor(height, steps) {
-        this.height = height;
+    constructor(steps) {
         this.steps = steps;
     }
 
@@ -22,7 +21,7 @@ export class RevolutionGenerator {
             for (const [x, y] of baseCurve) {
                 const xr = x * cosA;
                 const zr = x * sinA;
-                vertices.push([xr, y * this.height, zr]);
+                vertices.push([xr, y, zr]);
             }
         }
 

@@ -1,18 +1,20 @@
 # TO DO
 ## High Priority
-- El scaling de puntos en las curvas no se puede hacer con el .scale?
-- Fix scaling special scaling should not be necessary, take measurements using grid on images,
-- Implement Vehicle Movemenet
-- Implement Printing menu
+- Check with scaling?
+- Centrado el modulo no el valor literal bozo
+- Put a camera on the car so i can see stuff
+- Check generation width, width rescaling may be necessary
+- Objects dont seem to be centered when rotating them in sweeps
 - Implement Object moving logic
 - Refine models visually
-- shelf could be simplified
-- Make several cars?
+- Make several cars? lambo, ups truck
 
+- B1 esta chueco; B2 esta levemente chueco
 
 ## Low Priority
 - Transition generateHelpers() into a class
-- Transition so everything has config{} as parameter Scalers mainly
+- Use singletons?
+- Revisar que es un centroide
 
 - Comment everything with this convention
 /**

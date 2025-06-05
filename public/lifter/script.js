@@ -3,18 +3,14 @@ import { SceneConfig } from './configs/BaseConfig.js';
 import { TridimensionalPrinter } from './elements/TridimensionalPrinter.js';
 import { Shelf } from './elements/Shelf.js';
 import { Vehicle } from './elements/Vehicle.js';
-import { flattenBezierSegments, flattenCatmullSegments, rescaleCurve } from './helpers/utils/curves.js';
 import { generateHelpers } from './debug/Helpers.js';
-import { SweepGenerator } from './helpers/SweepGenerator.js';
-import { curves } from './helpers/Curves.js';
-import { RevolutionGenerator } from './helpers/RevolutionGenerator.js';
+import { GUI } from 'dat.gui';
 
 // The Scene contains all the elements
 const scene = new THREE.Scene();
 
 // Magic
 generateHelpers(scene, SceneConfig.GRID_SIZE);
-
 
 // =============== SCENE ================
 const shelfManager = new Shelf();
@@ -33,7 +29,7 @@ const vehicleModel = vehicleManager.generate()
 scene.add(vehicleModel)
 
 // =============== CUSTOM CURVE TESTING ================
-// const originalCurve = curves.A4();
+// const originalCurve = baseCurves.A4();
 // const scaledCurve = rescaleCurve(originalCurve, { maxWidth: 1, maxHeight: 1, center: false });
 // const flattenedCurve = flattenCatmullSegments(scaledCurve)
 // const generator = new RevolutionGenerator(1, 50);
@@ -68,11 +64,53 @@ camera.position.set(
 );
 
 // The renderer converts the 3D Scene into a 2D image
-const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas') });
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas') });
 // Specify the sizes to the rendered
 renderer.setSize(window.innerWidth, window.innerHeight);
-// Add the canvas to the webpage
-document.body.appendChild(renderer.domElement);
+
+// ======= MENU HANDLING ========
+
+// GUI Configuration
+const gui = new GUI();
+
+const menuValues = {
+    tipoSuperficie: 'barrido',
+    forma2DRevolucion: 'A1',
+    forma2DBarrido: 'B1',
+    anguloTorsion: 1.0,
+    alturaTotal: 1,
+    imprimir: () => {
+        try {
+            tridimensionalPrinterManager.print(menuValues);
+        } catch (err) {
+            console.log(`Error: ${err}`);
+        }
+    }
+};
+
+// Superficie Type
+const tipoController = gui.add(menuValues, 'tipoSuperficie', ['barrido', 'revolucion']).name('Tipo de Superficie');
+
+// Add conditional folders for each surface type
+const barridoFolder = gui.addFolder('Barrido');
+barridoFolder.add(menuValues, 'forma2DBarrido', ['B1', 'B2', 'B3', 'B4']).name('Forma 2D');
+
+const revolucionFolder = gui.addFolder('Revolución');
+revolucionFolder.add(menuValues, 'forma2DRevolucion', ['A1', 'A2', 'A3', 'A4']).name('Forma 2D');
+
+// Shared parameters
+gui.add(menuValues, 'anguloTorsion').name('Ángulo de torsión').min(1).max(360).step(1);
+gui.add(menuValues, 'alturaTotal').name('Altura total').min(1).max(3.2).step(0.1);
+gui.add(menuValues, 'imprimir').name('Imprimir');
+
+// Visibility toggling
+function updateVisibility() {
+    const isBarrido = menuValues.tipoSuperficie === 'barrido';
+    barridoFolder.domElement.style.display = isBarrido ? '' : 'none';
+    revolucionFolder.domElement.style.display = isBarrido ? 'none' : '';
+}
+tipoController.onChange(updateVisibility);
+updateVisibility(); // Initial visibility setup
 
 function animate() {
     requestAnimationFrame(animate);
