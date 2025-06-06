@@ -1,24 +1,16 @@
 # TO DO
 ## High Priority
-- Put a camera on the car so i can see stuff
-- Implement Object moving logic
-- Refine models visually
-- Inivisble plane
-
-- B1 esta chueco; B2 esta levemente chueco
+- Galpon
+- Cosas anchas
+- B2 esta mal centrado, B4 tomo danonino
 
 ## Low Priority
-- Transition generateHelpers() into a class
-- Use singletons?
+- Transition generateHelpers() and printer gui into a class
+- Transition number of segments into the menu
 - Revisar que es un centroide, parece que no es a prueba de balas, yo quiero el centro de masa creo
-- Comment everything with this convention
-/**
- * Flattens an array of bezier segment definitions into a single array of [x, z] points
- * @param {Array<Array<string>>} bezierSegments - Each inner array is 2 or 3 Vector2 definitions
- * @param {number} [pointsPerSegment=20] - Number of points to sample per segment
- * @returns {Array<Array<number>>} Flattened list of [x, z] points
- */
 
 ## CHICHES
+- Agregar tapas
+- Marco y ruedas del auto no son como deberian
 - Make several cars? lambo, ups truck
 - Dynamic scaling of elements

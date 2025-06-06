@@ -74,9 +74,6 @@ export class Vehicle {
         return this.group;
     }
 
-    /**
-   * Call this every frame to respond to user input
-   */
     animate(keys) {
         const speed = 0.05;
         const rotationSpeed = 0.02;

@@ -182,13 +182,9 @@ export function rescaleCurve(
     const width = maxX - minX;
     const height = maxY - minY;
 
-    // Compute independent scales
     const scaleX = maxWidth ? maxWidth / width : 1;
     const scaleY = maxHeight ? maxHeight / height : 1;
 
-    // If preserveAspect is true, we do one uniform scale:
-    //   `scale = max(scaleX, scaleY)`
-    // Otherwise, we let X→scaleX and Y→scaleY separately.
     let finalScaleX, finalScaleY;
     if (preserveAspect) {
         const s = Math.max(scaleX, scaleY);
@@ -199,7 +195,6 @@ export function rescaleCurve(
         finalScaleY = scaleY;
     }
 
-    // Compute a “centroid” so we recenter the curve “around its average”:
     const centroidX = xs.reduce((a, b) => a + b, 0) / xs.length;
     const centroidY = ys.reduce((a, b) => a + b, 0) / ys.length;
     const offsetX = center ? centroidX : 0;
@@ -213,71 +208,3 @@ export function rescaleCurve(
         })
     );
 }
-
-// export function rescaleCurve(curves, { maxWidth, maxHeight, center = true }) {
-//     const allPoints = curves.flat();
-//     const xs = allPoints.map(p => p.x);
-//     const ys = allPoints.map(p => p.y);
-
-//     const minX = Math.min(...xs);
-//     const maxX = Math.max(...xs);
-//     const minY = Math.min(...ys);
-//     const maxY = Math.max(...ys);
-
-//     const width = maxX - minX;
-//     const height = maxY - minY;
-
-//     let scaleX = maxWidth ? maxWidth / width : 1;
-//     let scaleY = maxHeight ? maxHeight / height : 1;
-//     let scale = Math.max(scaleX, scaleY);
-
-//     const centroidX = xs.reduce((a, b) => a + b, 0) / xs.length;
-//     const centroidY = ys.reduce((a, b) => a + b, 0) / ys.length;
-
-//     const offsetX = center ? centroidX : 0;
-//     const offsetY = center ? centroidY : 0;
-
-//     return curves.map(curve =>
-//         curve.map(p =>
-//             new THREE.Vector2(
-//                 (p.x - offsetX) * scale,
-//                 (p.y - offsetY) * scale
-//             )
-//         )
-//     );
-// }
-
-
-// export function rescaleCurve(curves, { maxWidth, maxHeight, center = true }) {
-//     const allPoints = curves.flat();
-//     const xs = allPoints.map(p => p.x);
-//     const ys = allPoints.map(p => p.y);
-
-//     const minX = Math.min(...xs);
-//     const maxX = Math.max(...xs);
-//     const minY = Math.min(...ys);
-//     const maxY = Math.max(...ys);
-
-//     const width = maxX - minX;
-//     const height = maxY - minY;
-
-//     let scaleX = maxWidth ? maxWidth / width : 1;
-//     let scaleY = maxHeight ? maxHeight / height : 1;
-//     let scale = Math.max(scaleX, scaleY);
-
-//     const offsetX = center ? (minX + maxX) / 2 : 0;
-//     const offsetY = center ? (minY + maxY) / 2 : 0;
-//     console.log(offsetX);
-//     console.log(offsetY);
-
-
-
-//     return curves.map(curve =>
-//         curve.map(p =>
-//             new THREE.Vector2(
-//                 (p.x - offsetX) * scale,
-//                 (p.y - offsetY) * scale
-//             )
-//         )
-//     );
-// }

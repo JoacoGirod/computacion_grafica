@@ -22,7 +22,6 @@ export class SweepGenerator {
             const sinA = Math.sin(angle);
 
             for (const [x, z] of baseCurve) {
-                // Aplica torsión: rotación alrededor del eje Y
                 const xr = x * cosA - z * sinA;
                 const zr = x * sinA + z * cosA;
                 vertices.push([xr, y, zr]);
