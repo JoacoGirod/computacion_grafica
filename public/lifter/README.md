@@ -1,7 +1,5 @@
 # TO DO
 ## High Priority
-- Galpon
-- Cosas anchas
 - B2 esta mal centrado
 
 ## Low Priority

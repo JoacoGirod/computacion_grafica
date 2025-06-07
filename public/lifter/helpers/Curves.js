@@ -39,21 +39,21 @@ export const baseCurves = new Map([
     ['B1', {
         type: 'catmull',
         segments: [
-            [new THREE.Vector2(-4, 5), new THREE.Vector2(-4, -5)],
-            [new THREE.Vector2(-4, -5), new THREE.Vector2(4, 0)],
-            [new THREE.Vector2(4, 0), new THREE.Vector2(-4, 5)],
+            [new THREE.Vector2(-5.775, 13), new THREE.Vector2(-5.775, -13)],
+            [new THREE.Vector2(-5.775, -13), new THREE.Vector2(14.225, 0)],
+            [new THREE.Vector2(14.225, 0), new THREE.Vector2(-5.755, 13)],
         ]
     }],
     ['B2', {
         type: 'bezier',
         segments: [
-            [new THREE.Vector2(-6, 7), new THREE.Vector2(-3, 2), new THREE.Vector2(-9, 0)],
-            [new THREE.Vector2(-9, 0), new THREE.Vector2(-3, -1), new THREE.Vector2(-6, -7)],
-            [new THREE.Vector2(-6, -7), new THREE.Vector2(0, -3), new THREE.Vector2(2, -9)],
-            [new THREE.Vector2(2, -9), new THREE.Vector2(2, -3), new THREE.Vector2(8, -4)],
-            [new THREE.Vector2(8, -4), new THREE.Vector2(4, 0), new THREE.Vector2(8, 4)],
-            [new THREE.Vector2(8, 4), new THREE.Vector2(2, 5), new THREE.Vector2(2, 10)],
-            [new THREE.Vector2(2, 10), new THREE.Vector2(0, 5), new THREE.Vector2(-6, 7)],
+            [new THREE.Vector2(-6, Math.sqrt(45)), new THREE.Vector2(-3, 2), new THREE.Vector2(-9, 0)],
+            [new THREE.Vector2(-9, 0), new THREE.Vector2(-3, -1), new THREE.Vector2(-6, -Math.sqrt(45))],
+            [new THREE.Vector2(-6, -Math.sqrt(45)), new THREE.Vector2(0, -3), new THREE.Vector2(2, -Math.sqrt(77))],
+            [new THREE.Vector2(2, -Math.sqrt(77)), new THREE.Vector2(2, -3), new THREE.Vector2(8, -Math.sqrt(17))],
+            [new THREE.Vector2(8, -Math.sqrt(17)), new THREE.Vector2(4, 0), new THREE.Vector2(8, Math.sqrt(17))],
+            [new THREE.Vector2(8, Math.sqrt(17)), new THREE.Vector2(2, 5), new THREE.Vector2(2, Math.sqrt(77))],
+            [new THREE.Vector2(2, Math.sqrt(77)), new THREE.Vector2(0, 5), new THREE.Vector2(-6, Math.sqrt(45))],
         ]
     }],
     ['B3', {
@@ -68,19 +68,19 @@ export const baseCurves = new Map([
             [new THREE.Vector2(-3, -2), new THREE.Vector2(-3, 2)],
             [new THREE.Vector2(-9, -2), new THREE.Vector2(-3, -2)],
             [new THREE.Vector2(-9, -2), new THREE.Vector2(-9, -4)],
-            [new THREE.Vector2(-9, -4), new THREE.Vector2(-9, -8), new THREE.Vector2(-4, -8)],
-            [new THREE.Vector2(-4, -8), new THREE.Vector2(-2, -8)],
-            [new THREE.Vector2(-2, -8), new THREE.Vector2(-2, -3)],
+            [new THREE.Vector2(-9, -4), new THREE.Vector2(-9, -9), new THREE.Vector2(-4, -9)],
+            [new THREE.Vector2(-4, -9), new THREE.Vector2(-2, -9)],
+            [new THREE.Vector2(-2, -9), new THREE.Vector2(-2, -3)],
             [new THREE.Vector2(-2, -3), new THREE.Vector2(2, -3)],
-            [new THREE.Vector2(2, -3), new THREE.Vector2(2, -8)],
-            [new THREE.Vector2(2, -8), new THREE.Vector2(4, -8)],
-            [new THREE.Vector2(4, -8), new THREE.Vector2(8, -8), new THREE.Vector2(8, -4)],
-            [new THREE.Vector2(8, -4), new THREE.Vector2(8, -2)],
-            [new THREE.Vector2(8, -2), new THREE.Vector2(3, -2)],
+            [new THREE.Vector2(2, -3), new THREE.Vector2(2, -9)],
+            [new THREE.Vector2(2, -9), new THREE.Vector2(4, -9)],
+            [new THREE.Vector2(4, -9), new THREE.Vector2(9, -9), new THREE.Vector2(9, -4)],
+            [new THREE.Vector2(9, -4), new THREE.Vector2(9, -2)],
+            [new THREE.Vector2(9, -2), new THREE.Vector2(3, -2)],
             [new THREE.Vector2(3, -2), new THREE.Vector2(3, 2)],
-            [new THREE.Vector2(3, 2), new THREE.Vector2(8, 2)],
-            [new THREE.Vector2(8, 2), new THREE.Vector2(8, 4)],
-            [new THREE.Vector2(8, 4), new THREE.Vector2(8, 9), new THREE.Vector2(4, 9)],
+            [new THREE.Vector2(3, 2), new THREE.Vector2(9, 2)],
+            [new THREE.Vector2(9, 2), new THREE.Vector2(9, 4)],
+            [new THREE.Vector2(9, 4), new THREE.Vector2(9, 9), new THREE.Vector2(4, 9)],
             [new THREE.Vector2(4, 9), new THREE.Vector2(2, 9)],
             [new THREE.Vector2(2, 9), new THREE.Vector2(2, 3)],
         ]
@@ -221,8 +221,12 @@ export function rescaleCurve(
 
     const centroidX = xs.reduce((a, b) => a + b, 0) / xs.length;
     const centroidY = ys.reduce((a, b) => a + b, 0) / ys.length;
+
     const offsetX = center ? centroidX : 0;
     const offsetY = center ? centroidY : 0;
+
+    console.log(centroidX);
+    console.log(centroidY);
 
     return curves.map((curve) =>
         curve.map((p) => {

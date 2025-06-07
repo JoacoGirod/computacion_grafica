@@ -33,9 +33,7 @@ export class House {
                 new THREE.Vector2(18, 10)
             ]
         ]
-        console.log(baseCurve);
         const scaledCurve = rescaleCurve(baseCurve, { maxWidth: 100, maxHeight: 50, center: false, preserveAspect: false });
-        console.log(scaledCurve);
         const flattenedCurve = flattenBezierSegments(scaledCurve);
 
         const generator = new SweepGenerator(100, 0, 50, true);
