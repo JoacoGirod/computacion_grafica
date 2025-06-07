@@ -8,8 +8,6 @@ export class TridimensionalPrinter {
         // Printing
         this.maxHeight = config.maxHeight || 3.2;
         this.maxWidth = config.maxWidth || 2;
-        this.sweepingSteps = config.sweepingSteps || 10;
-        this.revolutionSteps = config.revolutionSteps || 10;
         this.currentObject = null;
 
         // Model Generation
@@ -59,7 +57,7 @@ export class TridimensionalPrinter {
             [1.6, 2.0], [1.8, 1.6], [1.8, 0.0], [0.0, 0.0]
         ].map(([x, y]) => new THREE.Vector2(x, y));
 
-        const revGen = new RevolutionGenerator(this.revolutionSteps);
+        const revGen = new RevolutionGenerator(10);
         const baseMesh = new THREE.Mesh(revGen.generateGeometry(baseCurve), normalMaterial);
 
         barGroup.position.x = -1.5;
@@ -77,7 +75,9 @@ export class TridimensionalPrinter {
             forma2DBarrido,
             anguloTorsion,
             anchoTotal,
-            alturaTotal
+            alturaTotal,
+            pasosBarrido,
+            pasosRevolucion
         } = menuValues;
 
         if (alturaTotal <= 0 || alturaTotal > this.maxHeight) {
@@ -99,10 +99,10 @@ export class TridimensionalPrinter {
         let scaledCurve;
         if (tipo === "revolucion") {
             scaledCurve = rescaleCurve(baseCurve.segments, { maxWidth: anchoTotal / 2, maxHeight: alturaTotal, center: false, preserveAspect: false });
-            generator = new RevolutionGenerator(50);
+            generator = new RevolutionGenerator(pasosRevolucion);
         } else if (tipo === "barrido") {
             scaledCurve = rescaleCurve(baseCurve.segments, { maxWidth: anchoTotal, maxHeight: anchoTotal, center: false, preserveAspect: true });
-            generator = new SweepGenerator(alturaTotal, anguloTorsion * 2 * Math.PI / 360, 50);
+            generator = new SweepGenerator(alturaTotal, anguloTorsion * 2 * Math.PI / 360, pasosBarrido);
         } else {
             throw new Error(`Tipo de superficie inválido: ${tipoSuperficie}`);
         }

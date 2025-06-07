@@ -10,7 +10,7 @@ export class RevolutionGenerator {
         const faces = [];
 
         const nPoints = baseCurve.length;
-        const steps = this.steps; // parametrizing this steps would be logical
+        const steps = this.steps;
         const fullRotation = Math.PI * 2; // Having objects made from a smaller rotation would be kinda cool
 
         for (let i = 0; i <= steps; i++) {
