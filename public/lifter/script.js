@@ -3,11 +3,10 @@ import { SceneConfig } from './configs/BaseConfig.js';
 import { TridimensionalPrinter } from './elements/TridimensionalPrinter.js';
 import { Shelf } from './elements/Shelf.js';
 import { Vehicle } from './elements/Vehicle.js';
-import { generateHelpers } from './debug/Helpers.js';
-import { GUI } from 'dat.gui';
 import { CameraManager } from './helpers/CameraManager.js';
-import { setupPrinterGUI } from './helpers/PrinterGUI.js';
 import { House } from './elements/House.js';
+import { PrinterGUI } from './helpers/PrinterGUI.js'
+import { ThreeHelperGenerator } from './helpers/Helpers.js'
 
 
 // =============== SETUP SCENE, CAMERA, RENDERER ===============
@@ -31,9 +30,14 @@ const houseManager = new House();
 const houseModel = houseManager.generate()
 scene.add(houseModel)
 
-// generateHelpers(scene, SceneConfig.GRID_SIZE); // transition this into a class
+const helperGen = new ThreeHelperGenerator(scene, 100);
+helperGen.generate();
 
-setupPrinterGUI(tridimensionalPrinterManager); // transition this into a class
+const guiManager = new PrinterGUI(tridimensionalPrinterManager, () => {
+    console.log("Printed!");
+});
+
+const values = guiManager.generate();
 
 // =============== RENDERER ===============
 
