@@ -1,10 +1,10 @@
 import { buildGeometry } from "./utils/buildGeometry.js";
-
 export class SweepGenerator {
-    constructor(height, torsion, steps) {
+    constructor(height, torsion, steps, reverseNormals = false) {
         this.height = height;
         this.torsion = torsion;
         this.steps = steps;
+        this.reverseNormals = reverseNormals;
     }
 
     generateGeometry(baseCurve) {
@@ -14,6 +14,7 @@ export class SweepGenerator {
         const nPoints = baseCurve.length;
         const steps = this.steps;
 
+        // Generate vertices
         for (let i = 0; i <= steps; i++) {
             const y = (this.height * i) / steps;
             const angle = this.torsion * (i / steps);
@@ -28,6 +29,7 @@ export class SweepGenerator {
             }
         }
 
+        // Generate side faces
         for (let i = 0; i < steps; i++) {
             const base = i * nPoints;
             const nextBase = (i + 1) * nPoints;
@@ -36,11 +38,60 @@ export class SweepGenerator {
                 const v1 = base + j + 1;
                 const v2 = nextBase + j + 1;
                 const v3 = nextBase + j;
-                // faces.push([v0, v1, v2]); // triangle 1
-                // faces.push([v0, v2, v3]); // triangle 2
 
-                faces.push([v0, v2, v1]);
-                faces.push([v0, v3, v2]);
+                if (this.reverseNormals) {
+                    faces.push([v0, v1, v2]);
+                    faces.push([v0, v2, v3]);
+                } else {
+                    faces.push([v0, v2, v1]);
+                    faces.push([v0, v3, v2]);
+                }
+            }
+        }
+
+        // Add caps
+        const bottomCenterIndex = vertices.length;
+        const topCenterIndex = vertices.length + 1;
+        const yBottom = 0;
+        const yTop = this.height;
+
+        // Compute average center points for bottom/top
+        let sumBottom = [0, yBottom, 0], sumTop = [0, yTop, 0];
+        for (let i = 0; i < nPoints; i++) {
+            const [x, , z] = vertices[i];
+            sumBottom[0] += x;
+            sumBottom[2] += z;
+
+            const [xt, , zt] = vertices[vertices.length - nPoints + i];
+            sumTop[0] += xt;
+            sumTop[2] += zt;
+        }
+        sumBottom[0] /= nPoints; sumBottom[2] /= nPoints;
+        sumTop[0] /= nPoints; sumTop[2] /= nPoints;
+
+        vertices.push(sumBottom); // bottom center
+        vertices.push(sumTop);    // top center
+
+        // Bottom cap
+        for (let i = 0; i < nPoints - 1; i++) {
+            const v0 = i;
+            const v1 = i + 1;
+            if (this.reverseNormals) {
+                faces.push([bottomCenterIndex, v1, v0]);
+            } else {
+                faces.push([bottomCenterIndex, v0, v1]);
+            }
+        }
+
+        // Top cap
+        const base = steps * nPoints;
+        for (let i = 0; i < nPoints - 1; i++) {
+            const v0 = base + i;
+            const v1 = base + i + 1;
+            if (this.reverseNormals) {
+                faces.push([topCenterIndex, v0, v1]);
+            } else {
+                faces.push([topCenterIndex, v1, v0]);
             }
         }
 

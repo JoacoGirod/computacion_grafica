@@ -101,7 +101,7 @@ export class TridimensionalPrinter {
             scaledCurve = rescaleCurve(baseCurve.segments, { maxWidth: anchoTotal / 2, maxHeight: alturaTotal, center: false, preserveAspect: false });
             generator = new RevolutionGenerator(50);
         } else if (tipo === "barrido") {
-            scaledCurve = rescaleCurve(baseCurve.segments, { maxWidth: anchoTotal, maxHeight: anchoTotal, center: true, preserveAspect: false });
+            scaledCurve = rescaleCurve(baseCurve.segments, { maxWidth: anchoTotal, maxHeight: anchoTotal, center: true, preserveAspect: true });
             generator = new SweepGenerator(alturaTotal, anguloTorsion * 2 * Math.PI / 360, 50);
         } else {
             throw new Error(`Tipo de superficie inválido: ${tipoSuperficie}`);
@@ -120,7 +120,6 @@ export class TridimensionalPrinter {
         const frankenstein = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({
             clippingPlanes: [this.clippingPlane],
             clipShadows: true,
-            clipping: true
         }));
 
         frankenstein.position.y = 2;

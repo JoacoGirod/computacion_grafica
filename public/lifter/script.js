@@ -31,7 +31,7 @@ const houseManager = new House();
 const houseModel = houseManager.generate()
 scene.add(houseModel)
 
-generateHelpers(scene, SceneConfig.GRID_SIZE); // transition this into a class
+// generateHelpers(scene, SceneConfig.GRID_SIZE); // transition this into a class
 
 setupPrinterGUI(tridimensionalPrinterManager); // transition this into a class
 

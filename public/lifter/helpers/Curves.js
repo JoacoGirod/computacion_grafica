@@ -87,14 +87,38 @@ export const baseCurves = new Map([
     }],
     ['B4', {
         type: 'bezier',
-        segments: [
-            [new THREE.Vector2(0, 11), new THREE.Vector2(-4, 11), new THREE.Vector2(-4, 7)],
-            [new THREE.Vector2(-4, 7), new THREE.Vector2(-4, -7)],
-            [new THREE.Vector2(-4, -7), new THREE.Vector2(-4, -11), new THREE.Vector2(0, -11)],
-            [new THREE.Vector2(0, -11), new THREE.Vector2(4, -11), new THREE.Vector2(4, -7)],
-            [new THREE.Vector2(4, -7), new THREE.Vector2(4, 7)],
-            [new THREE.Vector2(4, 7), new THREE.Vector2(4, 11), new THREE.Vector2(0, 11)],
-        ]
+        segments:
+            [
+                [
+                    new THREE.Vector2(0, 10),
+                    new THREE.Vector2(-4, 10),
+                    new THREE.Vector2(-4, 6)
+                ],
+                [
+                    new THREE.Vector2(-4, 6),
+                    new THREE.Vector2(-4, -6)
+                ],
+                [
+                    new THREE.Vector2(-4, -6),
+                    new THREE.Vector2(-4, -10),
+                    new THREE.Vector2(0, -10)
+                ],
+                [
+                    new THREE.Vector2(0, -10),
+                    new THREE.Vector2(4, -10),
+                    new THREE.Vector2(4, -6)
+                ],
+                [
+                    new THREE.Vector2(4, -6),
+                    new THREE.Vector2(4, 6)
+                ],
+                [
+                    new THREE.Vector2(4, 6),
+                    new THREE.Vector2(4, 10),
+                    new THREE.Vector2(0, 10)
+                ]
+            ]
+
     }],
 ]);
 
@@ -187,7 +211,7 @@ export function rescaleCurve(
 
     let finalScaleX, finalScaleY;
     if (preserveAspect) {
-        const s = Math.max(scaleX, scaleY);
+        const s = Math.min(scaleX, scaleY);
         finalScaleX = s;
         finalScaleY = s;
     } else {
