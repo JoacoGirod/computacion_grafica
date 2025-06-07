@@ -141,8 +141,6 @@ export class Vehicle {
     }
 
     dropOffObject() {
-        console.log(this.heldObject);
-
         if (!this.heldObject) return null;
         const mesh = this.heldObject;
         this.plane.remove(mesh);

@@ -95,12 +95,10 @@ export class CameraManager {
             if (keys['KeyO']) {
                 camera.zoom *= 1.01;
                 camera.updateProjectionMatrix();
-                console.log(`[${this.currentCamera}] Zooming in`);
             }
             if (keys['KeyP']) {
                 camera.zoom /= 1.01;
                 camera.updateProjectionMatrix();
-                console.log(`[${this.currentCamera}] Zooming out`);
             }
         } else if (keys['KeyO'] || keys['KeyP']) {
             console.warn(`Zoom not supported on current camera: ${this.currentCamera}`);

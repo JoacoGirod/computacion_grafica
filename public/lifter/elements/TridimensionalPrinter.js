@@ -101,11 +101,7 @@ export class TridimensionalPrinter {
             scaledCurve = rescaleCurve(baseCurve.segments, { maxWidth: anchoTotal / 2, maxHeight: alturaTotal, center: false, preserveAspect: false });
             generator = new RevolutionGenerator(50);
         } else if (tipo === "barrido") {
-            console.log(baseCurve.segments);
-
             scaledCurve = rescaleCurve(baseCurve.segments, { maxWidth: anchoTotal, maxHeight: anchoTotal, center: false, preserveAspect: true });
-            console.log(scaledCurve);
-
             generator = new SweepGenerator(alturaTotal, anguloTorsion * 2 * Math.PI / 360, 50);
         } else {
             throw new Error(`Tipo de superficie inválido: ${tipoSuperficie}`);
@@ -160,7 +156,7 @@ export class TridimensionalPrinter {
             const elapsed = time - start;
             const t = Math.min(elapsed / duration, 1);
 
-            connectionGroup.position.y = startY + t * totalDistance;
+            connectionGroup.position.y = 0.1 + startY + t * totalDistance;
 
             this.clippingPlane.constant = this.currentObject.position.y + t * maxY;
 

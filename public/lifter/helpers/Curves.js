@@ -225,9 +225,6 @@ export function rescaleCurve(
     const offsetX = center ? centroidX : 0;
     const offsetY = center ? centroidY : 0;
 
-    console.log(centroidX);
-    console.log(centroidY);
-
     return curves.map((curve) =>
         curve.map((p) => {
             const newX = (p.x - offsetX) * finalScaleX;
