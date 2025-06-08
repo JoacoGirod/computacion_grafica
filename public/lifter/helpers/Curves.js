@@ -136,6 +136,8 @@ export function flattenBezierSegments(bezierSegments, pointsPerSegment = 20) {
             curve = new THREE.LineCurve(points[0], points[1]);
         } else if (points.length === 3) {
             curve = new THREE.QuadraticBezierCurve(points[0], points[1], points[2]);
+        } else if (points.length === 4) {
+            curve = new THREE.CubicBezierCurve(points[0], points[1], points[2], points[3]);
         } else {
             throw new Error("Unsupported number of control points: " + points.length);
         }
@@ -148,12 +150,13 @@ export function flattenBezierSegments(bezierSegments, pointsPerSegment = 20) {
         }
 
         for (const p of sampled) {
-            curvePoints.push([p.x, p.y]); // Note: Vector2 has x and y
+            curvePoints.push([p.x, p.y]);
         }
     }
 
     return curvePoints;
 }
+
 
 export function flattenCatmullSegments(catmullSegments, pointsPerSegment = 20, closed = false) {
     const curvePoints = [];

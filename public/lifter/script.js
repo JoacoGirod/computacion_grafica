@@ -23,7 +23,7 @@ tridimensionalPrinterModel.position.x = -8;
 scene.add(tridimensionalPrinterModel);
 
 const vehicleManager = new Vehicle();
-const vehicleModel = vehicleManager.generate();
+const vehicleModel = vehicleManager.generateZonda();
 scene.add(vehicleModel);
 
 const houseManager = new House();
