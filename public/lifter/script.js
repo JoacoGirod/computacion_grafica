@@ -22,7 +22,7 @@ tridimensionalPrinterModel.position.x = -8;
 scene.add(tridimensionalPrinterModel);
 
 const vehicleManager = new Vehicle();
-const vehicleModel = vehicleManager.generateZonda();
+let vehicleModel = vehicleManager.generate();
 scene.add(vehicleModel);
 
 const houseManager = new House();
@@ -53,6 +53,18 @@ const keys = {};
 window.addEventListener('keydown', (event) => {
     keys[event.code] = true;
     cameraManager.handleKeyDown(event.code); // Handles Camera Set Ups (1, 2, 3, 4, 5, 6)
+
+    switch (event.code) {
+        case 'KeyB':
+            switchVehicle('default');
+            break;
+        case 'KeyZ':
+            switchVehicle('zonda');
+            break;
+        case 'KeyF':
+            switchVehicle('forklift');
+            break;
+    }
 });
 
 window.addEventListener('keyup', (event) => {
@@ -115,4 +127,22 @@ function handleGrabOrRelease() {
             vehicleManager.pickUpObject(heldMesh);
         }
     }
+}
+
+function switchVehicle(type) {
+    scene.remove(vehicleModel);
+
+    switch (type) {
+        case 'default':
+            vehicleModel = vehicleManager.generate();
+            break;
+        case 'zonda':
+            vehicleModel = vehicleManager.generateZonda();
+            break;
+        case 'forklift':
+            vehicleModel = vehicleManager.generateForklift();
+            break;
+    }
+
+    scene.add(vehicleModel);
 }
