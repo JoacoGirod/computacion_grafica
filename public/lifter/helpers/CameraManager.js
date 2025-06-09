@@ -74,14 +74,16 @@ export class CameraManager {
     }
 
     animate(keys) {
+        // Follow camera logic
         if (this.currentCamera === 'rearFollow') {
             const offset = new THREE.Vector3(12, 5, 0).applyQuaternion(this.vehicle.group.quaternion);
             this.cameras.rearFollow.position.copy(this.vehicle.group.position).add(offset);
 
-            const lookAtTarget = new THREE.Vector3(-1, 0, 0).applyQuaternion(this.vehicle.group.quaternion).add(this.vehicle.group.position);
+            const lookAtTarget = new THREE.Vector3(-1, 0, 0)
+                .applyQuaternion(this.vehicle.group.quaternion)
+                .add(this.vehicle.group.position);
             this.cameras.rearFollow.lookAt(lookAtTarget);
         }
-
 
         if (this.currentCamera === 'sideFollow') {
             const offset = new THREE.Vector3(0, 2, -5).applyQuaternion(this.vehicle.group.quaternion);
@@ -89,21 +91,43 @@ export class CameraManager {
             this.cameras.sideFollow.lookAt(this.vehicle.group.position);
         }
 
-        // Handle zoom if applicable
         const camera = this.cameras[this.currentCamera];
-        if (camera && camera.isPerspectiveCamera) {
+        const control = this.controls[this.currentCamera];
+
+        const zoomFactor = 1.01;
+
+        // O/P simulate scroll-based zoom (move camera in/out)
+        if (control && control.target && control.update && camera && camera.position) {
+            const direction = new THREE.Vector3();
+            direction.subVectors(camera.position, control.target).normalize();
+
             if (keys['KeyO']) {
-                camera.zoom *= 1.01;
-                camera.updateProjectionMatrix();
+                camera.position.addScaledVector(direction, -0.1);
+                control.update();
             }
+
             if (keys['KeyP']) {
-                camera.zoom /= 1.01;
-                camera.updateProjectionMatrix();
+                camera.position.addScaledVector(direction, 0.1);
+                control.update();
             }
         } else if (keys['KeyO'] || keys['KeyP']) {
-            console.warn(`Zoom not supported on current camera: ${this.currentCamera}`);
+            console.warn(`Zoom (scroll-like) not supported by control for camera: ${this.currentCamera}`);
+        }
+
+        // K/L use camera.zoom
+        if (camera && camera.isPerspectiveCamera) {
+            if (keys['KeyK']) {
+                camera.zoom *= zoomFactor;
+                camera.updateProjectionMatrix();
+            }
+
+            if (keys['KeyL']) {
+                camera.zoom /= zoomFactor;
+                camera.updateProjectionMatrix();
+            }
         }
     }
+
 
     handleKeyDown(code) {
         switch (code) {

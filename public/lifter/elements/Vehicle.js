@@ -1,4 +1,4 @@
-import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+import * as THREE from 'three';
 import { RevolutionGenerator } from '../helpers/RevolutionGenerator.js';
 import { SweepGenerator } from '../helpers/SweepGenerator.js';
 import { flattenBezierSegments } from '../helpers/Curves.js';
@@ -168,10 +168,10 @@ export class Vehicle {
         const wheel4Group = wheel1Group.clone();
         wheel4Group.scale.copy(new THREE.Vector3(1, -1, -1));
 
-        wheel1Group.position.x = 1.75; wheel1Group.position.z = 1.85
-        wheel2Group.position.x = 6.4; wheel2Group.position.z = 1.85
-        wheel3Group.position.x = 1.75; wheel3Group.position.z = -1.85
-        wheel4Group.position.x = 6.4; wheel4Group.position.z = -1.85
+        wheel1Group.position.x = 1.8; wheel1Group.position.z = 1.85
+        wheel2Group.position.x = 6.5; wheel2Group.position.z = 1.85
+        wheel3Group.position.x = 1.8; wheel3Group.position.z = -1.85
+        wheel4Group.position.x = 6.5; wheel4Group.position.z = -1.85
 
         this.wheels.push(wheel1Group, wheel2Group, wheel3Group, wheel4Group)
 
@@ -181,15 +181,15 @@ export class Vehicle {
             [new THREE.Vector2(1, 5), new THREE.Vector2(3, 3), new THREE.Vector2(3, 1)],
             [new THREE.Vector2(3, 1), new THREE.Vector2(5, 0), new THREE.Vector2(0, 0)],
             [new THREE.Vector2(0, 0), new THREE.Vector2(9, 0)],
-            [new THREE.Vector2(9, 0), new THREE.Vector2(8, 0), new THREE.Vector2(8, 3)],
+            [new THREE.Vector2(10, 0), new THREE.Vector2(8.5, 0), new THREE.Vector2(8, 3)],
             [new THREE.Vector2(8, 3), new THREE.Vector2(9, 6), new THREE.Vector2(12, 6)],
             [new THREE.Vector2(12, 6), new THREE.Vector2(15, 6), new THREE.Vector2(16, 3)],
-            [new THREE.Vector2(16, 3), new THREE.Vector2(16, 0), new THREE.Vector2(15, 0)],
+            [new THREE.Vector2(16, 3), new THREE.Vector2(16, 1), new THREE.Vector2(14, 0)],
             [new THREE.Vector2(15, 0), new THREE.Vector2(40, 0)],
-            [new THREE.Vector2(40, 0), new THREE.Vector2(39, 0), new THREE.Vector2(39, 3)],
+            [new THREE.Vector2(41, 0), new THREE.Vector2(39.5, 0), new THREE.Vector2(39, 3)],
             [new THREE.Vector2(39, 3), new THREE.Vector2(40, 6), new THREE.Vector2(43, 6)],
             [new THREE.Vector2(43, 6), new THREE.Vector2(46, 6), new THREE.Vector2(47, 3)],
-            [new THREE.Vector2(47, 3), new THREE.Vector2(47, 0), new THREE.Vector2(46, 0)],
+            [new THREE.Vector2(47, 3), new THREE.Vector2(47, 1), new THREE.Vector2(45, 0)],
             [new THREE.Vector2(46, 0), new THREE.Vector2(49, 0), new THREE.Vector2(53, 0)],
             [new THREE.Vector2(53, 0), new THREE.Vector2(53, 3), new THREE.Vector2(53, 4)],
             [new THREE.Vector2(53, 4), new THREE.Vector2(52, 4), new THREE.Vector2(51, 6)],
@@ -219,10 +219,10 @@ export class Vehicle {
 
         const scaledCurveCI = rescaleCurve(innerChasis, { maxWidth: 8, center: false, preserveAspect: true });
         const flattenedCurveCI = flattenBezierSegments(scaledCurveCI);
-        const generatorCI = new SweepGenerator(3, 0, 3);
+        const generatorCI = new SweepGenerator(2, 0, 3);
         const innerChasisMesh = new THREE.Mesh(generatorCI.generateGeometry(flattenedCurveCI), normalMaterial);
         innerChasisMesh.rotation.x = -Math.PI / 2
-        innerChasisMesh.position.y = 0.05; innerChasisMesh.position.z = 1.5
+        innerChasisMesh.position.y = 0.05; innerChasisMesh.position.z = 1
 
         const cockpit = [
             [new THREE.Vector2(10, 8), new THREE.Vector2(6, 8), new THREE.Vector2(0, 2)],

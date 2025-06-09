@@ -8,7 +8,6 @@ import { House } from './elements/House.js';
 import { PrinterGUI } from './helpers/PrinterGUI.js'
 import { ThreeHelperGenerator } from './helpers/Helpers.js'
 
-
 // =============== SETUP SCENE, CAMERA, RENDERER ===============
 const scene = new THREE.Scene();
 

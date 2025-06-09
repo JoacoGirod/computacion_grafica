@@ -1,4 +1,4 @@
-import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+import * as THREE from 'three';
 import { SweepGenerator } from '../helpers/SweepGenerator.js';
 import { RevolutionGenerator } from '../helpers/RevolutionGenerator.js';
 import { baseCurves, flattenBezierSegments, flattenCatmullSegments, rescaleCurve } from '../helpers/Curves.js';
@@ -76,8 +76,8 @@ export class TridimensionalPrinter {
             anguloTorsion,
             anchoTotal,
             alturaTotal,
-            pasosBarrido,
-            pasosRevolucion
+            pasosGeneracion,
+            pasosCurva
         } = menuValues;
 
         if (alturaTotal <= 0 || alturaTotal > this.maxHeight) {
@@ -99,19 +99,19 @@ export class TridimensionalPrinter {
         let scaledCurve;
         if (tipo === "revolucion") {
             scaledCurve = rescaleCurve(baseCurve.segments, { maxWidth: anchoTotal / 2, maxHeight: alturaTotal, center: false, preserveAspect: false });
-            generator = new RevolutionGenerator(pasosRevolucion);
+            generator = new RevolutionGenerator(pasosGeneracion);
         } else if (tipo === "barrido") {
             scaledCurve = rescaleCurve(baseCurve.segments, { maxWidth: anchoTotal, maxHeight: anchoTotal, center: false, preserveAspect: true });
-            generator = new SweepGenerator(alturaTotal, anguloTorsion * 2 * Math.PI / 360, pasosBarrido);
+            generator = new SweepGenerator(alturaTotal, anguloTorsion * 2 * Math.PI / 360, pasosGeneracion);
         } else {
             throw new Error(`Tipo de superficie inválido: ${tipoSuperficie}`);
         }
 
         let flattenedCurve;
         if (baseCurve.type == "catmull") {
-            flattenedCurve = flattenCatmullSegments(scaledCurve);
+            flattenedCurve = flattenCatmullSegments(scaledCurve, pasosCurva);
         } else if (baseCurve.type == "bezier") {
-            flattenedCurve = flattenBezierSegments(scaledCurve);
+            flattenedCurve = flattenBezierSegments(scaledCurve, pasosCurva);
         }
 
         const geometry = generator.generateGeometry(flattenedCurve);

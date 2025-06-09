@@ -1,4 +1,4 @@
-import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+import * as THREE from 'three';
 import { rescaleCurve } from '../helpers/Curves.js';
 import { flattenBezierSegments } from '../helpers/Curves.js';
 import { SweepGenerator } from '../helpers/SweepGenerator.js';
