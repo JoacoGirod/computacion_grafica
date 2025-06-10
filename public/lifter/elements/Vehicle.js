@@ -12,15 +12,15 @@ export class Vehicle {
         this.wheels = [];
         this.plane = null; // Moving plane
         this.heldObject = null;
-        this.zondaMode = false;
     }
 
     generate() {
-        this.zondaMode = false
         this.group.clear();
+        this.wheels = []
 
         const normalMaterial = new THREE.MeshNormalMaterial()
 
+        // ================ LIFTER
         // Rails
         const rail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 7, 0.3), normalMaterial)
         rail1.position.y = 3.5; rail1.position.z = 0.75
@@ -43,11 +43,12 @@ export class Vehicle {
         railGroup.add(rail1, rail2, crossRail1, crossRail2, crossRail3, this.plane)
         railGroup.position.y = 0.5
 
+        // ================ BODY
         // Vehicle Body
         const body = new THREE.Mesh(new THREE.BoxGeometry(3.8, 1, 2), normalMaterial)
         body.position.x = 3.8 / 2 + 0.05; body.position.y = 0.5 + 1.25 / 2
 
-        // Wheels
+        // ================ WHEELS
         const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.25), normalMaterial)
         wheel.rotation.x = Math.PI / 2
         const wheelDecoration = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.1, 0.1), normalMaterial)
@@ -70,10 +71,11 @@ export class Vehicle {
 
         this.wheels.push(wheel1Group, wheel2Group, wheel3Group, wheel4Group)
 
-        const carGroup = new THREE.Group()
-        carGroup.add(body, wheel1Group, wheel2Group, wheel3Group, wheel4Group)
+        // ================ VEHICLE
+        const vehicleGroup = new THREE.Group()
+        vehicleGroup.add(body, wheel1Group, wheel2Group, wheel3Group, wheel4Group)
 
-        this.group.add(railGroup, carGroup)
+        this.group.add(railGroup, vehicleGroup)
 
         this.group.scale.copy(this.scale);
 
@@ -81,8 +83,8 @@ export class Vehicle {
     }
 
     generateZonda() {
-        this.zondaMode = true
         this.group.clear();
+        this.wheels = []
 
         const normalMaterial = new THREE.MeshNormalMaterial()
 
@@ -122,6 +124,7 @@ export class Vehicle {
         const flattenedCurveWO = flattenBezierSegments(scaledCurveWO);
         const generatorWO = new RevolutionGenerator(50);
         const wheelOutsideMesh = new THREE.Mesh(generatorWO.generateGeometry(flattenedCurveWO), normalMaterial);
+        wheelOutsideMesh.rotation.x = Math.PI / 2
 
         const wheelInside = [
             [new THREE.Vector2(0.5, 4.5), new THREE.Vector2(-0.5, 4.5)],
@@ -153,13 +156,16 @@ export class Vehicle {
         const scaledCurveWI = rescaleCurve(wheelInside, { maxWidth: 1, center: false, preserveAspect: true });
         const flattenedCurveWI = flattenBezierSegments(scaledCurveWI);
         const generatorWI = new SweepGenerator(0.2, 0, 3);
+
         const wheelInsideMesh1 = new THREE.Mesh(generatorWI.generateGeometry(flattenedCurveWI), normalMaterial);
-        wheelInsideMesh1.rotation.y = Math.PI / 8
+        wheelInsideMesh1.rotation.x = Math.PI / 2
+
         const wheelInsideMesh2 = new THREE.Mesh(generatorWI.generateGeometry(flattenedCurveWI), normalMaterial);
+        wheelInsideMesh2.rotation.x = Math.PI / 2
+
         const wheel1Group = new THREE.Group()
         wheel1Group.add(wheelOutsideMesh, wheelInsideMesh1, wheelInsideMesh2)
         wheel1Group.position.y = 0.6
-        wheel1Group.rotation.x = Math.PI / 2
 
         const wheel2Group = wheel1Group.clone()
         const wheel3Group = wheel1Group.clone();
@@ -314,8 +320,7 @@ export class Vehicle {
         mainBody.add(cockpitMesh)
         mainBody.add(innerChasisMesh, outerChasisMesh1, outerChasisMesh2)
 
-        // -------------
-
+        // ================ VEHICLE
         const carGroup = new THREE.Group()
         carGroup.add(railGroup, mainBody, wheels)
 
@@ -327,8 +332,8 @@ export class Vehicle {
     }
 
     generateForklift() {
-        this.zondaMode = true
         this.group.clear();
+        this.wheels = []
 
         const normalMaterial = new THREE.MeshNormalMaterial()
 
@@ -368,6 +373,7 @@ export class Vehicle {
         const flattenedCurveWO = flattenBezierSegments(scaledCurveWO);
         const generatorWO = new RevolutionGenerator(50);
         const wheelOutsideMesh = new THREE.Mesh(generatorWO.generateGeometry(flattenedCurveWO), normalMaterial);
+        wheelOutsideMesh.rotation.x = Math.PI / 2
 
         const wheelInside = [
             [new THREE.Vector2(0.5, 4.5), new THREE.Vector2(-0.5, 4.5)],
@@ -400,22 +406,20 @@ export class Vehicle {
         const flattenedCurveWI = flattenBezierSegments(scaledCurveWI);
         const generatorWI = new SweepGenerator(0.2, 0, 3);
         const wheelInsideMesh = new THREE.Mesh(generatorWI.generateGeometry(flattenedCurveWI), normalMaterial);
+        wheelInsideMesh.rotation.x = Math.PI / 2
         const wheel1Group = new THREE.Group()
         wheel1Group.add(wheelOutsideMesh, wheelInsideMesh)
-        wheel1Group.position.y = 0.7
-        wheel1Group.rotation.x = Math.PI / 2
 
         const wheel2Group = wheel1Group.clone()
-        wheel1Group.scale.copy(new THREE.Vector3(1.3, 1, 1.3))
+        wheel1Group.scale.copy(new THREE.Vector3(1.3, 1.3, 1))
         const wheel3Group = wheel1Group.clone();
-        wheel3Group.scale.copy(new THREE.Vector3(1, -1, -1));
+        wheel3Group.scale.copy(new THREE.Vector3(1.3, -1.3, -1))
         const wheel4Group = wheel1Group.clone();
         wheel4Group.scale.copy(new THREE.Vector3(1, -1, -1));
-        wheel3Group.scale.copy(new THREE.Vector3(1.3, 1, 1.3))
 
-        wheel1Group.position.x = 1.7; wheel1Group.position.z = 1.3
+        wheel1Group.position.x = 1.7; wheel1Group.position.y = 0.77; wheel1Group.position.z = 1.3
         wheel2Group.position.x = 5.3; wheel2Group.position.y = 0.6; wheel2Group.position.z = 1.3
-        wheel3Group.position.x = 1.7; wheel3Group.position.z = -1.5
+        wheel3Group.position.x = 1.7; wheel3Group.position.y = 0.77; wheel3Group.position.z = -1.5
         wheel4Group.position.x = 5.3; wheel4Group.position.y = 0.6; wheel4Group.position.z = -1.5
 
         this.wheels.push(wheel1Group, wheel2Group, wheel3Group, wheel4Group)
@@ -424,7 +428,7 @@ export class Vehicle {
 
         wheels.add(wheel1Group, wheel2Group, wheel3Group, wheel4Group)
 
-
+        // ================ BODIES
         const body = [
             [new THREE.Vector2(4, 0), new THREE.Vector2(4, 4), new THREE.Vector2(0, 4)],
             [new THREE.Vector2(4, 0), new THREE.Vector2(12, 0)],
@@ -475,7 +479,8 @@ export class Vehicle {
         secondBodyMesh.rotation.x = - Math.PI / 2
         secondBodyMesh.position.x = 1.8; secondBodyMesh.position.y = 1.4; secondBodyMesh.position.z = 1
 
-        const wheelSupport = [
+        // ================ STEERING WHEEL
+        const steeringWheelSupport = [
             [new THREE.Vector2(0, 1), new THREE.Vector2(3, 0)],
             [new THREE.Vector2(3, 0), new THREE.Vector2(3, 4), new THREE.Vector2(5, 5)],
             [new THREE.Vector2(5, 5), new THREE.Vector2(6, 7), new THREE.Vector2(5, 8)],
@@ -485,7 +490,7 @@ export class Vehicle {
             [new THREE.Vector2(6, 12), new THREE.Vector2(2, 10), new THREE.Vector2(1, 8), new THREE.Vector2(1, 6)],
             [new THREE.Vector2(1, 6), new THREE.Vector2(0, 6), new THREE.Vector2(0, 1)]
         ]
-        const scaledCurveWS = rescaleCurve(wheelSupport, { maxWidth: 0.7, center: false, preserveAspect: true });
+        const scaledCurveWS = rescaleCurve(steeringWheelSupport, { maxWidth: 0.7, center: false, preserveAspect: true });
         const flattenedCurveWS = flattenBezierSegments(scaledCurveWS);
         const generatorWS = new SweepGenerator(1, 0, 3);
         const wheelSupportMesh = new THREE.Mesh(generatorWS.generateGeometry(flattenedCurveWS), normalMaterial);
@@ -498,6 +503,7 @@ export class Vehicle {
         steeringWheel.rotation.z = -Math.PI / 3
         steeringWheel.position.x = 2.5; steeringWheel.position.y = 3.2, steeringWheel.position.z = 0
 
+        // ================ SEAT
         const seat = [
             [new THREE.Vector2(1, 3), new THREE.Vector2(0, 2), new THREE.Vector2(1, 1)],
             [new THREE.Vector2(1, 1), new THREE.Vector2(3, 0), new THREE.Vector2(13, 0), new THREE.Vector2(14, 1)],
@@ -514,6 +520,7 @@ export class Vehicle {
         seatMesh.rotation.x = - Math.PI / 2
         seatMesh.position.x = 3.5; seatMesh.position.y = 2.3; seatMesh.position.z = 0.4
 
+        // ================ CAGE
         const cage = [
             [new THREE.Vector2(16, 14), new THREE.Vector2(8, 14)],
             [new THREE.Vector2(8, 14), new THREE.Vector2(4, 15), new THREE.Vector2(0, 0)],
@@ -540,7 +547,7 @@ export class Vehicle {
         const cageCrossBar2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 1.8), normalMaterial)
         cageCrossBar2.position.x = 4.8; cageCrossBar2.position.y = 4.41
 
-
+        // ================ LIFTER CONNECTOR
         const railConnector = [
             [new THREE.Vector2(0, 8), new THREE.Vector2(4, 4), new THREE.Vector2(0, 2)],
             [new THREE.Vector2(0, 2), new THREE.Vector2(0, 0)],
@@ -556,8 +563,7 @@ export class Vehicle {
         railConnectorMesh.position.y = 0.7; railConnectorMesh.position.z = 1.125
 
 
-        // -------------
-
+        // ================ VEHICLE
         const mainBody = new THREE.Group()
         mainBody.add(bodyMesh, secondBodyMesh, wheelSupportMesh, steeringWheel, seatMesh, cageMesh1, cageMesh2, cageCrossBar1, cageCrossBar2, railConnectorMesh)
         const carGroup = new THREE.Group()

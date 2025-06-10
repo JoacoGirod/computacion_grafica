@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { SceneConfig } from './configs/BaseConfig.js';
 import { TridimensionalPrinter } from './elements/TridimensionalPrinter.js';
 import { Shelf } from './elements/Shelf.js';
 import { Vehicle } from './elements/Vehicle.js';
@@ -32,13 +31,10 @@ scene.add(houseModel)
 const helperGen = new ThreeHelperGenerator(scene, 100);
 helperGen.generate();
 
-const guiManager = new PrinterGUI(tridimensionalPrinterManager, () => {
-    console.log("Printed!");
-});
+const guiManager = new PrinterGUI(tridimensionalPrinterManager, () => { });
+guiManager.generate();
 
-const values = guiManager.generate();
-
-// =============== RENDERER ===============
+// =============== RENDERER, CAMERA, INPUT MANAGEMENT ===============
 
 const renderer = new THREE.WebGLRenderer({
     canvas: document.getElementById('three-canvas')

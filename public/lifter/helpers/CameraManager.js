@@ -44,10 +44,9 @@ export class CameraManager {
         this.controls.shelfOrbit.update();
 
         // Driver camera
+        // in initCameras()
         const driver = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
-        driver.position.set(2, 3, 0);
-        driver.lookAt(new THREE.Vector3(1, 3, 0));
-        this.vehicle.group.add(driver);
+        this.scene.add(driver);
         this.cameras.driver = driver;
 
         // Rear follow
@@ -74,7 +73,20 @@ export class CameraManager {
     }
 
     animate(keys) {
-        // Follow camera logic
+        if (this.currentCamera === 'driver') {
+            const offset = new THREE.Vector3(3, 3, 0)
+                .applyQuaternion(this.vehicle.group.quaternion);
+
+            this.cameras.driver.position
+                .copy(this.vehicle.group.position)
+                .add(offset);
+
+            const forward = new THREE.Vector3(-2, 3, 0)
+                .applyQuaternion(this.vehicle.group.quaternion)
+                .add(this.vehicle.group.position);
+            this.cameras.driver.lookAt(forward);
+        }
+
         if (this.currentCamera === 'rearFollow') {
             const offset = new THREE.Vector3(12, 5, 0).applyQuaternion(this.vehicle.group.quaternion);
             this.cameras.rearFollow.position.copy(this.vehicle.group.position).add(offset);

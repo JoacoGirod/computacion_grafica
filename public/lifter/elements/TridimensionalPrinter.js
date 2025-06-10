@@ -46,16 +46,12 @@ export class TridimensionalPrinter {
         // Elevating bar
         const barMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 7), normalMaterial);
         barMesh.position.y = 3.5;
-
         const barGroup = new THREE.Group();
         connectionGroup.position.y = 6;
         barGroup.add(barMesh, connectionGroup);
 
         // Base
-        const baseCurve = [
-            [0.0, 1.6], [1.2, 1.6], [1.4, 2.0],
-            [1.6, 2.0], [1.8, 1.6], [1.8, 0.0], [0.0, 0.0]
-        ].map(([x, y]) => new THREE.Vector2(x, y));
+        const baseCurve = [[0.0, 1.6], [1.2, 1.6], [1.4, 2.0], [1.6, 2.0], [1.8, 1.6], [1.8, 0.0], [0.0, 0.0]].map(([x, y]) => new THREE.Vector2(x, y));
 
         const revGen = new RevolutionGenerator(10);
         const baseMesh = new THREE.Mesh(revGen.generateGeometry(baseCurve), normalMaterial);
