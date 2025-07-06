@@ -155,7 +155,7 @@ export class Vehicle {
 
         const scaledCurveWI = rescaleCurve(wheelInside, { maxWidth: 1, center: false, preserveAspect: true });
         const flattenedCurveWI = flattenBezierSegments(scaledCurveWI);
-        const generatorWI = new SweepGenerator(0.2, 0, 3);
+        const generatorWI = new SweepGenerator(0.2, 0, 100);
 
         const wheelInsideMesh1 = new THREE.Mesh(generatorWI.generateGeometry(flattenedCurveWI), normalMaterial);
         wheelInsideMesh1.rotation.x = Math.PI / 2
@@ -208,7 +208,7 @@ export class Vehicle {
         ]
         const scaledCurveCO = rescaleCurve(outerChasis, { maxWidth: 8, center: false, preserveAspect: true });
         const flattenedCurveCO = flattenBezierSegments(scaledCurveCO);
-        const generatorCO = new SweepGenerator(1, 0, 3);
+        const generatorCO = new SweepGenerator(1, 0, 100);
         const outerChasisMesh1 = new THREE.Mesh(generatorCO.generateGeometry(flattenedCurveCO), normalMaterial);
         const outerChasisMesh2 = new THREE.Mesh(generatorCO.generateGeometry(flattenedCurveCO), normalMaterial);
         outerChasisMesh1.rotation.x = -Math.PI / 2
@@ -228,7 +228,7 @@ export class Vehicle {
 
         const scaledCurveCI = rescaleCurve(innerChasis, { maxWidth: 8, center: false, preserveAspect: true });
         const flattenedCurveCI = flattenBezierSegments(scaledCurveCI);
-        const generatorCI = new SweepGenerator(2, 0, 3);
+        const generatorCI = new SweepGenerator(2, 0, 100);
         const innerChasisMesh = new THREE.Mesh(generatorCI.generateGeometry(flattenedCurveCI), normalMaterial);
         innerChasisMesh.rotation.x = -Math.PI / 2
         innerChasisMesh.position.y = 0.05; innerChasisMesh.position.z = 1
@@ -242,7 +242,7 @@ export class Vehicle {
         ]
         const scaledCurveC = rescaleCurve(cockpit, { maxWidth: 3.6, center: false, preserveAspect: true });
         const flattenedCurveC = flattenBezierSegments(scaledCurveC);
-        const generatorC = new SweepGenerator(1.6, 0, 3);
+        const generatorC = new SweepGenerator(1.6, 0, 100);
         const cockpitMesh = new THREE.Mesh(generatorC.generateGeometry(flattenedCurveC), normalMaterial);
         cockpitMesh.rotation.x = -Math.PI / 2
         cockpitMesh.position.x = 2.2; cockpitMesh.position.y = 0.7; cockpitMesh.position.z = 0.8
@@ -256,7 +256,7 @@ export class Vehicle {
         ]
         const scaledCurveSA = rescaleCurve(spoilerArm, { maxWidth: 0.4, center: false, preserveAspect: true });
         const flattenedCurveSA = flattenBezierSegments(scaledCurveSA);
-        const generatorSA = new SweepGenerator(0.4, 0, 3);
+        const generatorSA = new SweepGenerator(0.4, 0, 100);
         const spoilerArmMesh1 = new THREE.Mesh(generatorSA.generateGeometry(flattenedCurveSA), normalMaterial);
         spoilerArmMesh1.rotation.x = -Math.PI / 2
         spoilerArmMesh1.position.x = 7; spoilerArmMesh1.position.y = 1.2; spoilerArmMesh1.position.z = 1.3
@@ -274,7 +274,7 @@ export class Vehicle {
         ]
         const scaledCurveS = rescaleCurve(spoiler, { maxWidth: 0.7, center: false, preserveAspect: true });
         const flattenedCurveS = flattenBezierSegments(scaledCurveS);
-        const generatorS = new SweepGenerator(4, 0, 3);
+        const generatorS = new SweepGenerator(4, 0, 100);
         const spoilerMesh = new THREE.Mesh(generatorS.generateGeometry(flattenedCurveS), normalMaterial);
         spoilerMesh.rotation.x = -Math.PI / 2
         spoilerMesh.position.x = 7.2; spoilerMesh.position.y = 1.5; spoilerMesh.position.z = 2
@@ -287,11 +287,11 @@ export class Vehicle {
         ]
         const scaledCurveAI = rescaleCurve(airIntake, { maxWidth: 0.7, center: false, preserveAspect: true });
         const flattenedCurveAI = flattenBezierSegments(scaledCurveAI);
-        const generatorAI1 = new SweepGenerator(0.8, 0, 3);
+        const generatorAI1 = new SweepGenerator(0.8, 0, 100);
         const airIntakeMesh1 = new THREE.Mesh(generatorAI1.generateGeometry(flattenedCurveAI), normalMaterial);
         airIntakeMesh1.rotation.x = -Math.PI / 2
         airIntakeMesh1.position.x = 1.5; airIntakeMesh1.position.y = 0.8; airIntakeMesh1.position.z = 0.4
-        const generatorAI2 = new SweepGenerator(0.6, 0, 3);
+        const generatorAI2 = new SweepGenerator(0.6, 0, 100);
         const airIntakeMesh2 = new THREE.Mesh(generatorAI2.generateGeometry(flattenedCurveAI), normalMaterial);
         airIntakeMesh2.rotation.x = -Math.PI / 2
         airIntakeMesh2.position.x = 1.1; airIntakeMesh2.position.y = 0.7; airIntakeMesh2.position.z = 0.3
@@ -304,7 +304,7 @@ export class Vehicle {
         ]
         const scaledCurveH = rescaleCurve(headlight, { maxWidth: 0.7, center: false, preserveAspect: true });
         const flattenedCurveH = flattenBezierSegments(scaledCurveH);
-        const generatorH = new SweepGenerator(0.5, 0, 3);
+        const generatorH = new SweepGenerator(0.5, 0, 100);
         const headlightMesh1 = new THREE.Mesh(generatorH.generateGeometry(flattenedCurveH), normalMaterial);
         headlightMesh1.rotation.x = -Math.PI / 2
         headlightMesh1.position.x = 0.8; headlightMesh1.position.y = 1; headlightMesh1.position.z = 1.65
@@ -404,7 +404,7 @@ export class Vehicle {
 
         const scaledCurveWI = rescaleCurve(wheelInside, { maxWidth: 1, center: false, preserveAspect: true });
         const flattenedCurveWI = flattenBezierSegments(scaledCurveWI);
-        const generatorWI = new SweepGenerator(0.2, 0, 3);
+        const generatorWI = new SweepGenerator(0.2, 0, 100);
         const wheelInsideMesh = new THREE.Mesh(generatorWI.generateGeometry(flattenedCurveWI), normalMaterial);
         wheelInsideMesh.rotation.x = Math.PI / 2
         const wheel1Group = new THREE.Group()
@@ -453,7 +453,7 @@ export class Vehicle {
 
         const scaledCurveB = rescaleCurve(body, { maxWidth: 5, center: false, preserveAspect: true });
         const flattenedCurveB = flattenBezierSegments(scaledCurveB);
-        const generatorB = new SweepGenerator(3, 0, 3);
+        const generatorB = new SweepGenerator(3, 0, 100);
         const bodyMesh = new THREE.Mesh(generatorB.generateGeometry(flattenedCurveB), normalMaterial);
         bodyMesh.rotation.x = - Math.PI / 2
         bodyMesh.position.x = 1.5; bodyMesh.position.y = 0.6; bodyMesh.position.z = 1.5
@@ -474,7 +474,7 @@ export class Vehicle {
         ]
         const scaledCurveSB = rescaleCurve(secondBody, { maxWidth: 3, center: false, preserveAspect: true });
         const flattenedCurveSB = flattenBezierSegments(scaledCurveSB);
-        const generatorSB = new SweepGenerator(2, 0, 3);
+        const generatorSB = new SweepGenerator(2, 0, 100);
         const secondBodyMesh = new THREE.Mesh(generatorSB.generateGeometry(flattenedCurveSB), normalMaterial);
         secondBodyMesh.rotation.x = - Math.PI / 2
         secondBodyMesh.position.x = 1.8; secondBodyMesh.position.y = 1.4; secondBodyMesh.position.z = 1
@@ -492,14 +492,15 @@ export class Vehicle {
         ]
         const scaledCurveWS = rescaleCurve(steeringWheelSupport, { maxWidth: 0.7, center: false, preserveAspect: true });
         const flattenedCurveWS = flattenBezierSegments(scaledCurveWS);
-        const generatorWS = new SweepGenerator(1, 0, 3);
+        const generatorWS = new SweepGenerator(1, 0, 100);
         const wheelSupportMesh = new THREE.Mesh(generatorWS.generateGeometry(flattenedCurveWS), normalMaterial);
         wheelSupportMesh.rotation.x = - Math.PI / 2
         wheelSupportMesh.position.x = 1.8; wheelSupportMesh.position.y = 2; wheelSupportMesh.position.z = 0.5
 
         const steeringWheel = wheel1Group.clone()
-        steeringWheel.scale.copy(new THREE.Vector3(0.5, 0.8, 0.5))
-        steeringWheel.rotation.x = 0
+        steeringWheel.scale.copy(new THREE.Vector3(0.5, 0.5, 0.5))
+        steeringWheel.rotation.x = - Math.PI / 2
+        steeringWheel.rotation.y = Math.PI / 4
         steeringWheel.rotation.z = -Math.PI / 3
         steeringWheel.position.x = 2.5; steeringWheel.position.y = 3.2, steeringWheel.position.z = 0
 
@@ -515,7 +516,7 @@ export class Vehicle {
         ]
         const scaledCurveS = rescaleCurve(seat, { maxWidth: 1, center: false, preserveAspect: true });
         const flattenedCurveS = flattenBezierSegments(scaledCurveS);
-        const generatorS = new SweepGenerator(0.8, 0, 3);
+        const generatorS = new SweepGenerator(0.8, 0, 100);
         const seatMesh = new THREE.Mesh(generatorS.generateGeometry(flattenedCurveS), normalMaterial);
         seatMesh.rotation.x = - Math.PI / 2
         seatMesh.position.x = 3.5; seatMesh.position.y = 2.3; seatMesh.position.z = 0.4
@@ -534,7 +535,7 @@ export class Vehicle {
         ]
         const scaledCurveC = rescaleCurve(cage, { maxWidth: 4, center: false, preserveAspect: true });
         const flattenedCurveC = flattenBezierSegments(scaledCurveC);
-        const generatorC = new SweepGenerator(0.3, 0, 3);
+        const generatorC = new SweepGenerator(0.3, 0, 100);
         const cageMesh1 = new THREE.Mesh(generatorC.generateGeometry(flattenedCurveC), normalMaterial);
         cageMesh1.rotation.x = - Math.PI / 2
         cageMesh1.position.x = 1.5; cageMesh1.position.y = 1.7; cageMesh1.position.z = 1.2
@@ -557,7 +558,7 @@ export class Vehicle {
         ]
         const scaledCurveRC = rescaleCurve(railConnector, { maxWidth: 3, maxHeight: 1.2, center: false, preserveAspect: false });
         const flattenedCurveRC = flattenBezierSegments(scaledCurveRC);
-        const generatorRC = new SweepGenerator(2.25, 0, 3);
+        const generatorRC = new SweepGenerator(2.25, 0, 100);
         const railConnectorMesh = new THREE.Mesh(generatorRC.generateGeometry(flattenedCurveRC), normalMaterial);
         railConnectorMesh.rotation.x = - Math.PI / 2
         railConnectorMesh.position.y = 0.7; railConnectorMesh.position.z = 1.125
