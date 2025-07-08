@@ -30,6 +30,32 @@ export class TridimensionalPrinter {
         const handGroup = new THREE.Group();
         handGroup.add(planeMesh, planeTopMesh);
 
+        // Lights
+        const lightRadius = 0.15;
+        const lightHeight = -0.125;
+
+        const sphereGeometry = new THREE.SphereGeometry(lightRadius, 16, 16);
+        const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffffee });
+
+        const cornerOffsets = [
+            [-1, 1],
+            [1, 1],
+            [-1, -1],
+            [1, -1],
+        ];
+
+        for (const [offsetX, offsetZ] of cornerOffsets) {
+            // Create the actual PointLight
+            const pointLight = new THREE.PointLight(0xffffff, 1.2, 3);
+            pointLight.position.set(offsetX, lightHeight, offsetZ);
+            pointLight.castShadow = true;
+            handGroup.add(pointLight);
+
+            const bulb = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            bulb.position.copy(pointLight.position);
+            handGroup.add(bulb);
+        }
+
         // Arms & Box
         const boxMesh = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.75), normalMaterial);
         const arm1Mesh = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.2, 0.1), normalMaterial);
