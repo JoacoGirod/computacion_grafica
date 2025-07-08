@@ -117,13 +117,6 @@ The scene includes a graphical menu to configure the 3D model generation:
 
 ## Improvements
 
-* Use Delanauy triangulation with random points on the lid for the caps
-Una triangulación de Delaunay es una forma específica de dividir un conjunto de puntos en triángulos que cumple con una propiedad clave: la circunferencia circunscrita de cada triángulo no debe contener ningún otro punto del conjunto dentro de ella. En otras palabras, la triangulación de Delaunay busca minimizar el número de ángulos muy agudos o obtusos en la red de triángulos
-
-* Also voromoi: Un diagrama de Voronoi, también conocido como teselación de Dirichlet o polígonos de Thiessen, es una herramienta matemática que divide un plano en regiones basadas en la cercanía a un conjunto de puntos. Cada región, o celda de Voronoi, contiene todos los puntos del plano que están más cerca de su punto central que de cualquier otro punto del conjunto
-
-* Add how to run to readme
-
 * Add textures
 
 * Add lights
