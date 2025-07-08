@@ -28,7 +28,8 @@ export class Shelf {
     generate() {
         this.group.clear();
 
-        const normalMaterial = new THREE.MeshNormalMaterial();
+        const grayMaterial = new THREE.MeshPhongMaterial({ color: 0xc7c5c5 });
+        const brownMaterial = new THREE.MeshPhongMaterial({ color: 0x543922 });
 
         const totalHeight =
             this.yInferiorOffset +
@@ -39,7 +40,7 @@ export class Shelf {
         for (let col = 0; col < this.cols + 1; col++) {
             const x = col * this.qx;
             for (let depth of [0, this.qz]) {
-                const pole = new THREE.Mesh(new THREE.BoxGeometry(0.2, totalHeight, 0.2), normalMaterial)
+                const pole = new THREE.Mesh(new THREE.BoxGeometry(0.2, totalHeight, 0.2), brownMaterial)
                 pole.scale.copy(new THREE.Vector3(this.scale.x, 1, this.scale.z))
                 pole.position.set(x, totalHeight / 2, depth);
                 this.group.add(pole);
@@ -49,7 +50,7 @@ export class Shelf {
         // Planes
         for (let row = 0; row <= this.rows; row++) {
             const y = this.yInferiorOffset + row * (this.qy + this.separatorHeight);
-            const level = new THREE.Mesh(new THREE.BoxGeometry(this.cols * this.qx, this.separatorHeight, this.qz), normalMaterial);
+            const level = new THREE.Mesh(new THREE.BoxGeometry(this.cols * this.qx, this.separatorHeight, this.qz), grayMaterial);
             level.scale.copy(new THREE.Vector3(1.1, 1, 1.5))
             level.position.set(
                 (this.cols * this.qx) / 2,

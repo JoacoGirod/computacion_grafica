@@ -17,22 +17,39 @@ export class TridimensionalPrinter {
         // Clipping
         this.clippingPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
 
+        // Textures
+        const path = '/lifter/assets/tridimensionalPrinter/';
+        const format = '.jpg';
+        const envMapUrls = [
+            path + 'greyRoom1_right' + format,
+            path + 'greyRoom1_left' + format,
+            path + 'greyRoom1_top' + format,
+            path + 'greyRoom1_bottom' + format,
+            path + 'greyRoom1_front' + format,
+            path + 'greyRoom1_back' + format,
+        ];
+
+        this.cubeTexture = new THREE.CubeTextureLoader().load(envMapUrls);
+        this.cubeTexture.encoding = THREE.sRGBEncoding;
+
         this.textures = {};
         const loader = new THREE.TextureLoader();
         for (let i = 1; i <= 9; i++) {
             const textureName = `tex${i}.png`;
-            this.textures[textureName] = loader.load(`/lifter/assets/tridimensionalPrinter/${textureName}`);
+            this.textures[textureName] = loader.load(`${path}${textureName}`);
+            // Manipulate tiling
         }
     }
 
     generate() {
         this.group.clear();
         const normalMaterial = new THREE.MeshNormalMaterial();
+        const greenMaterial = new THREE.MeshPhongMaterial({ color: 0x298028, shininess: 100, emissive: 0x000000, specular: 0x111111 });
 
         // Plane and Box
-        const planeMesh = new THREE.Mesh(new THREE.BoxGeometry(2, 0.1, 2), normalMaterial);
+        const planeMesh = new THREE.Mesh(new THREE.BoxGeometry(2, 0.1, 2), greenMaterial);
         planeMesh.position.y = -0.125;
-        const planeTopMesh = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.25, 1), normalMaterial);
+        const planeTopMesh = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.25, 1), greenMaterial);
 
         const handGroup = new THREE.Group();
         handGroup.add(planeMesh, planeTopMesh);
@@ -64,11 +81,11 @@ export class TridimensionalPrinter {
         }
 
         // Arms & Box
-        const boxMesh = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.75), normalMaterial);
-        const arm1Mesh = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.2, 0.1), normalMaterial);
+        const boxMesh = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.75), greenMaterial);
+        const arm1Mesh = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.2, 0.1), greenMaterial);
         arm1Mesh.position.x = 0.75; arm1Mesh.position.z = 0.1;
 
-        const arm2Mesh = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.2, 0.1), normalMaterial);
+        const arm2Mesh = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.2, 0.1), greenMaterial);
         arm2Mesh.position.x = 0.75; arm2Mesh.position.z = -0.1;
 
         const connectionGroup = new THREE.Group();
@@ -77,7 +94,8 @@ export class TridimensionalPrinter {
         connectionGroup.add(boxMesh, arm1Mesh, arm2Mesh, handGroup);
 
         // Elevating bar
-        const barMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 7), normalMaterial);
+        const grayMaterial = new THREE.MeshPhongMaterial({ color: 0x919191, shininess: 100, emissive: 0x000000, specular: 0x111111 });
+        const barMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 7), grayMaterial);
         barMesh.position.y = 3.5;
         const barGroup = new THREE.Group();
         connectionGroup.position.y = 6;
@@ -87,7 +105,15 @@ export class TridimensionalPrinter {
         const baseCurve = [[0.0, 1.6], [1.2, 1.6], [1.4, 2.0], [1.6, 2.0], [1.8, 1.6], [1.8, 0.0], [0.0, 0.0]].map(([x, y]) => new THREE.Vector2(x, y));
 
         const revGen = new RevolutionGenerator(100);
-        const baseMesh = new THREE.Mesh(revGen.generateGeometry(baseCurve), normalMaterial);
+
+        const reflectiveMaterial = new THREE.MeshStandardMaterial({
+            metalness: 1.0,
+            roughness: 0.1,
+            envMap: this.cubeTexture,
+            envMapIntensity: 1.2,
+            color: 0x666666
+        });
+        const baseMesh = new THREE.Mesh(revGen.generateGeometry(baseCurve), reflectiveMaterial);
 
         barGroup.position.x = -1.5;
         this.group.add(baseMesh, barGroup);
