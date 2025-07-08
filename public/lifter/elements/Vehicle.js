@@ -12,50 +12,66 @@ export class Vehicle {
         this.wheels = [];
         this.plane = null; // Moving plane
         this.heldObject = null;
+
+        const loader = new THREE.TextureLoader();
+
+        // Basic Vehicle Textures
+        this.bodyTexture = loader.load(`/lifter/assets/defaultVehicle/texturaGrua.jpg`);
+        this.wheelTexture = loader.load('/lifter/assets/defaultVehicle/rueda.jpg')
+
+        // Zonda Textures
+        const path = '/lifter/assets/tridimensionalPrinter/';
+        const format = '.jpg';
+        const envMapUrls = [
+            path + 'greyRoom1_right' + format,
+            path + 'greyRoom1_left' + format,
+            path + 'greyRoom1_top' + format,
+            path + 'greyRoom1_bottom' + format,
+            path + 'greyRoom1_front' + format,
+            path + 'greyRoom1_back' + format,
+        ];
+
+        this.cubeTexture = new THREE.CubeTextureLoader().load(envMapUrls);
+        this.cubeTexture.encoding = THREE.sRGBEncoding;
+
+        this.zondaInnerWheelTexture = loader.load('/lifter/assets/zonda/aluminium.jpg');
+        this.zondaBodyTexture = loader.load('/lifter/assets/zonda/forest.jpg');
+
+        this.zondaBodyTexture.wrapS = THREE.RepeatWrapping;
+        this.zondaBodyTexture.wrapT = THREE.RepeatWrapping;
+        this.zondaBodyTexture.repeat.set(1, 20);
+
     }
 
     generate() {
         this.group.clear();
         this.wheels = []
 
-        const normalMaterial = new THREE.MeshNormalMaterial()
-
         // ================ LIFTER
-        // Rails
-        const rail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 7, 0.3), normalMaterial)
-        rail1.position.y = 3.5; rail1.position.z = 0.75
-        const rail2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 7, 0.3), normalMaterial)
-        rail2.position.y = 3.5; rail2.position.z = -0.75
-
-        // Cross Rails
-        const crossRail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
-        crossRail1.position.x = 0.05; crossRail1.position.y = 0.5
-        const crossRail2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
-        crossRail2.position.x = 0.05; crossRail2.position.y = 3.66
-        const crossRail3 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
-        crossRail3.position.x = 0.05; crossRail3.position.y = 6.8
-
-        // Plane
-        this.plane = new THREE.Mesh(new THREE.BoxGeometry(2, 0.1, 1.5), normalMaterial)
-        this.plane.position.x = -1; this.plane.position.y = 2
-
-        const railGroup = new THREE.Group()
-        railGroup.add(rail1, rail2, crossRail1, crossRail2, crossRail3, this.plane)
-        railGroup.position.y = 0.5
+        const railGroup = this.generateRails();
 
         // ================ BODY
         // Vehicle Body
-        const body = new THREE.Mesh(new THREE.BoxGeometry(3.8, 1, 2), normalMaterial)
+        const body = new THREE.Mesh(new THREE.BoxGeometry(3.8, 1, 2), new THREE.MeshPhongMaterial({ map: this.bodyTexture }))
         body.position.x = 3.8 / 2 + 0.05; body.position.y = 0.5 + 1.25 / 2
 
         // ================ WHEELS
-        const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.25), normalMaterial)
+
+        const wheelCurve = [
+            [new THREE.Vector2(0, 2), new THREE.Vector2(-6, 2)],
+            [new THREE.Vector2(-6, 2), new THREE.Vector2(-7, 3)],
+            [new THREE.Vector2(-7, 3), new THREE.Vector2(-9, 3)],
+            [new THREE.Vector2(-9, 3), new THREE.Vector2(-9, 0)],
+            [new THREE.Vector2(-9, 0), new THREE.Vector2(0, 0)]
+        ]
+        const scaledCurve = rescaleCurve(wheelCurve, { maxWidth: 0.5, maxHeight: 0.5, center: false, preserveAspect: true });
+        const flattenedCurve = flattenBezierSegments(scaledCurve);
+        const revGen = new RevolutionGenerator(30, "radial");
+        const wheel = new THREE.Mesh(revGen.generateGeometry(flattenedCurve), new THREE.MeshPhongMaterial({ map: this.wheelTexture, }));
         wheel.rotation.x = Math.PI / 2
-        const wheelDecoration = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.1, 0.1), normalMaterial)
-        wheelDecoration.position.z = 0.25;
 
         const wheel1Group = new THREE.Group()
-        wheel1Group.add(wheel, wheelDecoration)
+        wheel1Group.add(wheel)
         wheel1Group.position.y = 0.5
 
         const wheel2Group = wheel1Group.clone()
@@ -89,27 +105,7 @@ export class Vehicle {
         const normalMaterial = new THREE.MeshNormalMaterial()
 
         // ================ LIFTER
-        // Rails
-        const rail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 7, 0.3), normalMaterial)
-        rail1.position.y = 3.5; rail1.position.z = 0.75
-        const rail2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 7, 0.3), normalMaterial)
-        rail2.position.y = 3.5; rail2.position.z = -0.75
-
-        // Cross Rails
-        const crossRail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
-        crossRail1.position.x = 0.05; crossRail1.position.y = 0.5
-        const crossRail2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
-        crossRail2.position.x = 0.05; crossRail2.position.y = 3.66
-        const crossRail3 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
-        crossRail3.position.x = 0.05; crossRail3.position.y = 6.8
-
-        // Plane
-        this.plane = new THREE.Mesh(new THREE.BoxGeometry(2, 0.1, 1.5), normalMaterial)
-        this.plane.position.x = -1; this.plane.position.y = 2
-
-        const railGroup = new THREE.Group()
-        railGroup.add(rail1, rail2, crossRail1, crossRail2, crossRail3, this.plane)
-        railGroup.position.y = 0.5
+        const railGroup = this.generateRails();
 
         // =============== WHEELS
         const wheelOutside = [
@@ -123,7 +119,8 @@ export class Vehicle {
         const scaledCurveWO = rescaleCurve(wheelOutside, { maxWidth: 0.6, maxHeight: 0.2, center: false, preserveAspect: false });
         const flattenedCurveWO = flattenBezierSegments(scaledCurveWO);
         const generatorWO = new RevolutionGenerator(50);
-        const wheelOutsideMesh = new THREE.Mesh(generatorWO.generateGeometry(flattenedCurveWO), normalMaterial);
+        const wheelOutsideMesh = new THREE.Mesh(generatorWO.generateGeometry(flattenedCurveWO), new THREE.MeshPhongMaterial({ color: 0x0a0a0a }));
+
         wheelOutsideMesh.rotation.x = Math.PI / 2
 
         const wheelInside = [
@@ -157,7 +154,15 @@ export class Vehicle {
         const flattenedCurveWI = flattenBezierSegments(scaledCurveWI);
         const generatorWI = new SweepGenerator(0.2, 0, 100);
 
-        const wheelInsideMesh1 = new THREE.Mesh(generatorWI.generateGeometry(flattenedCurveWI), normalMaterial);
+        const reflectiveMaterial = new THREE.MeshStandardMaterial({
+            metalness: 1.0,
+            roughness: 0.1,
+            envMap: this.cubeTexture,
+            envMapIntensity: 1.2,
+            color: 0x666666
+        });
+
+        const wheelInsideMesh1 = new THREE.Mesh(generatorWI.generateGeometry(flattenedCurveWI), reflectiveMaterial);
         wheelInsideMesh1.rotation.x = Math.PI / 2
 
         const wheelInsideMesh2 = new THREE.Mesh(generatorWI.generateGeometry(flattenedCurveWI), normalMaterial);
@@ -185,6 +190,20 @@ export class Vehicle {
         wheels.add(wheel1Group, wheel2Group, wheel3Group, wheel4Group)
 
         // ================== CHASIS
+        const blackMaterial = new THREE.MeshPhongMaterial({
+            color: 0x3b1212,         // deep, rich blue
+            shininess: 10,          // strong specular highlights
+            specular: 0xaaaaaa,      // light gray highlights for metallic look
+            emissive: 0x000000,      // no self-emission
+        });
+
+        const grayMaterial = new THREE.MeshPhongMaterial({
+            color: 0x3d3d3d,         // deep, rich blue
+            shininess: 10,          // strong specular highlights
+            specular: 0xaaaaaa,      // light gray highlights for metallic look
+            emissive: 0x000000,      // no self-emission
+        });
+
         const outerChasis = [
             [new THREE.Vector2(17, 7), new THREE.Vector2(11, 10), new THREE.Vector2(1, 5)],
             [new THREE.Vector2(1, 5), new THREE.Vector2(3, 3), new THREE.Vector2(3, 1)],
@@ -209,8 +228,8 @@ export class Vehicle {
         const scaledCurveCO = rescaleCurve(outerChasis, { maxWidth: 8, center: false, preserveAspect: true });
         const flattenedCurveCO = flattenBezierSegments(scaledCurveCO);
         const generatorCO = new SweepGenerator(1, 0, 100);
-        const outerChasisMesh1 = new THREE.Mesh(generatorCO.generateGeometry(flattenedCurveCO), normalMaterial);
-        const outerChasisMesh2 = new THREE.Mesh(generatorCO.generateGeometry(flattenedCurveCO), normalMaterial);
+        const outerChasisMesh1 = new THREE.Mesh(generatorCO.generateGeometry(flattenedCurveCO), blackMaterial);
+        const outerChasisMesh2 = new THREE.Mesh(generatorCO.generateGeometry(flattenedCurveCO), blackMaterial);
         outerChasisMesh1.rotation.x = -Math.PI / 2
         outerChasisMesh1.position.y = 0.08; outerChasisMesh1.position.z = 2
         outerChasisMesh2.rotation.x = -Math.PI / 2
@@ -229,7 +248,7 @@ export class Vehicle {
         const scaledCurveCI = rescaleCurve(innerChasis, { maxWidth: 8, center: false, preserveAspect: true });
         const flattenedCurveCI = flattenBezierSegments(scaledCurveCI);
         const generatorCI = new SweepGenerator(2, 0, 100);
-        const innerChasisMesh = new THREE.Mesh(generatorCI.generateGeometry(flattenedCurveCI), normalMaterial);
+        const innerChasisMesh = new THREE.Mesh(generatorCI.generateGeometry(flattenedCurveCI), grayMaterial);
         innerChasisMesh.rotation.x = -Math.PI / 2
         innerChasisMesh.position.y = 0.05; innerChasisMesh.position.z = 1
 
@@ -243,7 +262,7 @@ export class Vehicle {
         const scaledCurveC = rescaleCurve(cockpit, { maxWidth: 3.6, center: false, preserveAspect: true });
         const flattenedCurveC = flattenBezierSegments(scaledCurveC);
         const generatorC = new SweepGenerator(1.6, 0, 100);
-        const cockpitMesh = new THREE.Mesh(generatorC.generateGeometry(flattenedCurveC), normalMaterial);
+        const cockpitMesh = new THREE.Mesh(generatorC.generateGeometry(flattenedCurveC), reflectiveMaterial);
         cockpitMesh.rotation.x = -Math.PI / 2
         cockpitMesh.position.x = 2.2; cockpitMesh.position.y = 0.7; cockpitMesh.position.z = 0.8
 
@@ -257,10 +276,10 @@ export class Vehicle {
         const scaledCurveSA = rescaleCurve(spoilerArm, { maxWidth: 0.4, center: false, preserveAspect: true });
         const flattenedCurveSA = flattenBezierSegments(scaledCurveSA);
         const generatorSA = new SweepGenerator(0.4, 0, 100);
-        const spoilerArmMesh1 = new THREE.Mesh(generatorSA.generateGeometry(flattenedCurveSA), normalMaterial);
+        const spoilerArmMesh1 = new THREE.Mesh(generatorSA.generateGeometry(flattenedCurveSA), grayMaterial);
         spoilerArmMesh1.rotation.x = -Math.PI / 2
         spoilerArmMesh1.position.x = 7; spoilerArmMesh1.position.y = 1.2; spoilerArmMesh1.position.z = 1.3
-        const spoilerArmMesh2 = new THREE.Mesh(generatorSA.generateGeometry(flattenedCurveSA), normalMaterial);
+        const spoilerArmMesh2 = new THREE.Mesh(generatorSA.generateGeometry(flattenedCurveSA), grayMaterial);
         spoilerArmMesh2.rotation.x = -Math.PI / 2
         spoilerArmMesh2.position.x = 7; spoilerArmMesh2.position.y = 1.2; spoilerArmMesh2.position.z = -0.9
 
@@ -275,7 +294,7 @@ export class Vehicle {
         const scaledCurveS = rescaleCurve(spoiler, { maxWidth: 0.7, center: false, preserveAspect: true });
         const flattenedCurveS = flattenBezierSegments(scaledCurveS);
         const generatorS = new SweepGenerator(4, 0, 100);
-        const spoilerMesh = new THREE.Mesh(generatorS.generateGeometry(flattenedCurveS), normalMaterial);
+        const spoilerMesh = new THREE.Mesh(generatorS.generateGeometry(flattenedCurveS), reflectiveMaterial);
         spoilerMesh.rotation.x = -Math.PI / 2
         spoilerMesh.position.x = 7.2; spoilerMesh.position.y = 1.5; spoilerMesh.position.z = 2
 
@@ -288,11 +307,11 @@ export class Vehicle {
         const scaledCurveAI = rescaleCurve(airIntake, { maxWidth: 0.7, center: false, preserveAspect: true });
         const flattenedCurveAI = flattenBezierSegments(scaledCurveAI);
         const generatorAI1 = new SweepGenerator(0.8, 0, 100);
-        const airIntakeMesh1 = new THREE.Mesh(generatorAI1.generateGeometry(flattenedCurveAI), normalMaterial);
+        const airIntakeMesh1 = new THREE.Mesh(generatorAI1.generateGeometry(flattenedCurveAI), reflectiveMaterial);
         airIntakeMesh1.rotation.x = -Math.PI / 2
         airIntakeMesh1.position.x = 1.5; airIntakeMesh1.position.y = 0.8; airIntakeMesh1.position.z = 0.4
         const generatorAI2 = new SweepGenerator(0.6, 0, 100);
-        const airIntakeMesh2 = new THREE.Mesh(generatorAI2.generateGeometry(flattenedCurveAI), normalMaterial);
+        const airIntakeMesh2 = new THREE.Mesh(generatorAI2.generateGeometry(flattenedCurveAI), reflectiveMaterial);
         airIntakeMesh2.rotation.x = -Math.PI / 2
         airIntakeMesh2.position.x = 1.1; airIntakeMesh2.position.y = 0.7; airIntakeMesh2.position.z = 0.3
 
@@ -305,10 +324,10 @@ export class Vehicle {
         const scaledCurveH = rescaleCurve(headlight, { maxWidth: 0.7, center: false, preserveAspect: true });
         const flattenedCurveH = flattenBezierSegments(scaledCurveH);
         const generatorH = new SweepGenerator(0.5, 0, 100);
-        const headlightMesh1 = new THREE.Mesh(generatorH.generateGeometry(flattenedCurveH), normalMaterial);
+        const headlightMesh1 = new THREE.Mesh(generatorH.generateGeometry(flattenedCurveH), reflectiveMaterial);
         headlightMesh1.rotation.x = -Math.PI / 2
         headlightMesh1.position.x = 0.8; headlightMesh1.position.y = 1; headlightMesh1.position.z = 1.65
-        const headlightMesh2 = new THREE.Mesh(generatorH.generateGeometry(flattenedCurveH), normalMaterial);
+        const headlightMesh2 = new THREE.Mesh(generatorH.generateGeometry(flattenedCurveH), reflectiveMaterial);
         headlightMesh2.rotation.x = -Math.PI / 2
         headlightMesh2.position.x = 0.8; headlightMesh2.position.y = 1; headlightMesh2.position.z = -1.15
 
@@ -338,27 +357,7 @@ export class Vehicle {
         const normalMaterial = new THREE.MeshNormalMaterial()
 
         // ================ LIFTER
-        // Rails
-        const rail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 7, 0.3), normalMaterial)
-        rail1.position.y = 3.5; rail1.position.z = 0.75
-        const rail2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 7, 0.3), normalMaterial)
-        rail2.position.y = 3.5; rail2.position.z = -0.75
-
-        // Cross Rails
-        const crossRail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
-        crossRail1.position.x = 0.05; crossRail1.position.y = 0.5
-        const crossRail2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
-        crossRail2.position.x = 0.05; crossRail2.position.y = 3.66
-        const crossRail3 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), normalMaterial)
-        crossRail3.position.x = 0.05; crossRail3.position.y = 6.8
-
-        // Plane
-        this.plane = new THREE.Mesh(new THREE.BoxGeometry(2, 0.1, 1.5), normalMaterial)
-        this.plane.position.x = -1; this.plane.position.y = 2
-
-        const railGroup = new THREE.Group()
-        railGroup.add(rail1, rail2, crossRail1, crossRail2, crossRail3, this.plane)
-        railGroup.position.y = 0.5
+        const railGroup = this.generateRails();
 
         // =============== WHEELS
         const wheelOutside = [
@@ -660,5 +659,33 @@ export class Vehicle {
 
     isCarrying() {
         return this.heldObject !== null;
+    }
+
+
+    generateRails() {
+        const brownMaterial = new THREE.MeshPhongMaterial({ color: 0x543922 });
+        const orangeMaterial = new THREE.MeshPhongMaterial({ color: 0xa1612b });
+        // Rails
+        const rail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 7, 0.3), brownMaterial)
+        rail1.position.y = 3.5; rail1.position.z = 0.75
+        const rail2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 7, 0.3), brownMaterial)
+        rail2.position.y = 3.5; rail2.position.z = -0.75
+
+        // Cross Rails
+        const crossRail1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), orangeMaterial)
+        crossRail1.position.x = 0.05; crossRail1.position.y = 0.5
+        const crossRail2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), orangeMaterial)
+        crossRail2.position.x = 0.05; crossRail2.position.y = 3.66
+        const crossRail3 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 2), orangeMaterial)
+        crossRail3.position.x = 0.05; crossRail3.position.y = 6.8
+
+        // Plane
+        this.plane = new THREE.Mesh(new THREE.BoxGeometry(2, 0.1, 1.5), orangeMaterial)
+        this.plane.position.x = -1; this.plane.position.y = 2
+
+        const railGroup = new THREE.Group()
+        railGroup.add(rail1, rail2, crossRail1, crossRail2, crossRail3, this.plane)
+        railGroup.position.y = 0.5
+        return railGroup
     }
 }

@@ -43,7 +43,6 @@ export class TridimensionalPrinter {
 
     generate() {
         this.group.clear();
-        const normalMaterial = new THREE.MeshNormalMaterial();
         const greenMaterial = new THREE.MeshPhongMaterial({ color: 0x298028, shininess: 100, emissive: 0x000000, specular: 0x111111 });
 
         // Plane and Box

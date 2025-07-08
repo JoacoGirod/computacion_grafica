@@ -1,11 +1,12 @@
 import { buildGeometry } from "./utils/buildGeometry.js";
 
 export class RevolutionGenerator {
-    constructor(steps) {
+    constructor(steps, uvMapping = "cylindrical") {
         this.steps = steps;
+        this.uvMapping = uvMapping;
     }
 
-    generateGeometry(baseCurve) {
+    generateGeometry(baseCurve, uvMappingMode = this.uvMapping) {
         const vertices = [];
         const faces = [];
         const uvs = [];
@@ -14,11 +15,16 @@ export class RevolutionGenerator {
         const steps = this.steps;
         const fullRotation = Math.PI * 2;
 
+        // Compute max radius for radial UVs
+        let maxRadius = 0;
+        if (uvMappingMode === "radial") {
+            maxRadius = Math.max(...baseCurve.map(([x, _]) => Math.abs(x)));
+        }
+
         for (let i = 0; i <= steps; i++) {
             const angle = (fullRotation * i) / steps;
             const cosA = Math.cos(angle);
             const sinA = Math.sin(angle);
-            const u = i / steps;
 
             for (let j = 0; j < nPoints; j++) {
                 const [x, y] = baseCurve[j];
@@ -26,7 +32,19 @@ export class RevolutionGenerator {
                 const zr = x * sinA;
                 vertices.push([xr, y, zr]);
 
-                const v = j / (nPoints - 1);
+                // UV mapping
+                let u, v;
+                if (uvMappingMode === "cylindrical") {
+                    u = i / steps;
+                    v = j / (nPoints - 1);
+                } else if (uvMappingMode === "radial") {
+                    const diameter = 2 * maxRadius;
+                    u = 0.5 + xr / diameter;
+                    v = 0.5 + zr / diameter;
+                } else {
+                    throw new Error(`Unsupported UV mapping mode: ${uvMappingMode}`);
+                }
+
                 uvs.push([u, v]);
             }
         }

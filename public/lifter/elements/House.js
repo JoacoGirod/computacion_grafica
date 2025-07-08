@@ -62,8 +62,8 @@ export class House {
         // Lights
         const rows = 2;
         const cols = 3;
-        const spacingX = 10;
-        const spacingZ = 15;
+        const spacingX = 20;
+        const spacingZ = 10;
         const ceilingY = 20;
 
         const fixtureMaterial = new THREE.MeshStandardMaterial({
@@ -78,7 +78,7 @@ export class House {
                 const z = -((rows - 1) * spacingZ) / 2 + row * spacingZ;
 
                 // SpotLight setup
-                const spot = new THREE.SpotLight(0xffffff, 1.5, 100, Math.PI / 6, 0.3, 1);
+                const spot = new THREE.SpotLight(0xffffff, 9, 100, Math.PI / 6, 0.3, 1);
                 spot.position.set(x, ceilingY, z);
                 spot.target.position.set(x, 0, z); // Aim downward
 

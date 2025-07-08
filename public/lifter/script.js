@@ -38,10 +38,10 @@ guiManager.generate();
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.3); // soft white
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-directionalLight.position.set(30, 50, 30); // From above and front
-directionalLight.castShadow = true;
-scene.add(directionalLight);
+// const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+// directionalLight.position.set(30, 50, 30); // From above and front
+// directionalLight.castShadow = true;
+// scene.add(directionalLight);
 
 
 // =============== RENDERER, CAMERA, INPUT MANAGEMENT ===============
