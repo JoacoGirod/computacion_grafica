@@ -18,14 +18,14 @@ export class House {
             [new THREE.Vector2(0, 0), new THREE.Vector2(18, 0)],
             [new THREE.Vector2(18, 0), new THREE.Vector2(18, 10)]
         ]
-        const scaledCurve = rescaleCurve(baseCurve, { maxWidth: 100, maxHeight: 50, center: false, preserveAspect: false });
-        const flattenedCurve = flattenBezierSegments(scaledCurve);
-        const generator = new SweepGenerator(100, 0, 50, true);
+        const scaledCurve = rescaleCurve(baseCurve, { maxWidth: 50, maxHeight: 30, center: false, preserveAspect: false });
+        const flattenedCurve = flattenBezierSegments(scaledCurve, 200);
+        const generator = new SweepGenerator(50, 0, 200, true);
         const geometry = generator.generateGeometry(flattenedCurve,);
         const house = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial());
 
         house.rotation.x = -Math.PI / 2; house.rotation.z = - Math.PI / 2
-        house.position.x = -50; house.position.z = -50
+        house.position.x = -25; house.position.z = -25
 
         this.group.add(house)
 
