@@ -16,6 +16,13 @@ export class TridimensionalPrinter {
 
         // Clipping
         this.clippingPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
+
+        this.textures = {};
+        const loader = new THREE.TextureLoader();
+        for (let i = 1; i <= 9; i++) {
+            const textureName = `tex${i}.png`;
+            this.textures[textureName] = loader.load(`/lifter/assets/tridimensionalPrinter/${textureName}`);
+        }
     }
 
     generate() {
@@ -99,7 +106,8 @@ export class TridimensionalPrinter {
             anchoTotal,
             alturaTotal,
             pasosGeneracion,
-            pasosCurva
+            pasosCurva,
+            textura
         } = menuValues;
 
         if (alturaTotal <= 0 || alturaTotal > this.maxHeight) {
@@ -120,30 +128,54 @@ export class TridimensionalPrinter {
         let generator;
         let scaledCurve;
         if (tipo === "revolucion") {
-            scaledCurve = rescaleCurve(baseCurve.segments, { maxWidth: anchoTotal / 2, maxHeight: alturaTotal, center: false, preserveAspect: false });
+            scaledCurve = rescaleCurve(baseCurve.segments, {
+                maxWidth: anchoTotal / 2,
+                maxHeight: alturaTotal,
+                center: false,
+                preserveAspect: false
+            });
             generator = new RevolutionGenerator(pasosGeneracion);
         } else if (tipo === "barrido") {
-            scaledCurve = rescaleCurve(baseCurve.segments, { maxWidth: anchoTotal, maxHeight: anchoTotal, center: false, preserveAspect: true });
+            scaledCurve = rescaleCurve(baseCurve.segments, {
+                maxWidth: anchoTotal,
+                maxHeight: anchoTotal,
+                center: false,
+                preserveAspect: true
+            });
             generator = new SweepGenerator(alturaTotal, anguloTorsion * 2 * Math.PI / 360, pasosGeneracion);
         } else {
             throw new Error(`Tipo de superficie inválido: ${tipoSuperficie}`);
         }
 
         let flattenedCurve;
-        if (baseCurve.type == "catmull") {
+        if (baseCurve.type === "catmull") {
             flattenedCurve = flattenCatmullSegments(scaledCurve, pasosCurva);
-        } else if (baseCurve.type == "bezier") {
+        } else if (baseCurve.type === "bezier") {
             flattenedCurve = flattenBezierSegments(scaledCurve, pasosCurva);
         }
 
         const geometry = generator.generateGeometry(flattenedCurve);
         geometry.computeBoundingBox();
 
-        const frankenstein = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({
-            clippingPlanes: [this.clippingPlane],
-            clipShadows: true,
-        }));
+        const texture = this.textures[textura];
+        if (!texture) {
+            console.warn(`Textura no encontrada: ${textura}. Se usará material por defecto.`);
+        }
 
+        const material = texture
+            ? new THREE.MeshStandardMaterial({
+                map: texture,
+                metalness: 0.3,
+                roughness: 0.7,
+                clippingPlanes: [this.clippingPlane],
+                clipShadows: true,
+            })
+            : new THREE.MeshNormalMaterial({
+                clippingPlanes: [this.clippingPlane],
+                clipShadows: true,
+            });
+
+        const frankenstein = new THREE.Mesh(geometry, material);
         frankenstein.position.y = 2;
         frankenstein.name = 'PrintedObject';
 
