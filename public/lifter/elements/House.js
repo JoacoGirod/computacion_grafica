@@ -67,8 +67,8 @@ export class House {
         const ceilingY = 20;
 
         const fixtureMaterial = new THREE.MeshStandardMaterial({
-            color: 0xffffff,         // base color (pure white)
-            emissive: 0xffffee,      // soft glow effect
+            color: 0xffffff,
+            emissive: 0xffffee,
             emissiveIntensity: 1.0,
         });
 
