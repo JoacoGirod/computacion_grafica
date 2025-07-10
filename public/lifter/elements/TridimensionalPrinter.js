@@ -187,6 +187,18 @@ export class TridimensionalPrinter {
             console.warn(`Textura no encontrada: ${textura}. Se usará material por defecto.`);
         }
 
+        if (texture) {
+            const scaleFactorU = 8;  // tweak these as needed
+            const scaleFactorV = 5;
+
+            const repeatX = anchoTotal * scaleFactorU;
+            const repeatY = alturaTotal * scaleFactorV;
+
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(repeatX, repeatY);
+        }
+
         const material = texture
             ? new THREE.MeshStandardMaterial({
                 map: texture,
