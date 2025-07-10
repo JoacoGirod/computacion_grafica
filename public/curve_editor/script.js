@@ -258,4 +258,51 @@ function animate() {
     renderer.render(scene, camera);
 }
 
+// ----------------------------------------
+// Clear current points (if any)
+pointMeshes.forEach(mesh => scene.remove(mesh));
+pointMeshes = [];
+curvesPoints = [];
+
+// Define the body shape
+
+const body = [
+    [new THREE.Vector2(17, 7), new THREE.Vector2(11, 10), new THREE.Vector2(1, 5)],
+    [new THREE.Vector2(1, 5), new THREE.Vector2(3, 3), new THREE.Vector2(4, 1)],
+    [new THREE.Vector2(4, 1), new THREE.Vector2(3, 0), new THREE.Vector2(0, 0)],
+    [new THREE.Vector2(0, 0), new THREE.Vector2(9, 0)],
+    [new THREE.Vector2(10, 0), new THREE.Vector2(8.5, 0), new THREE.Vector2(8, 3)],
+    [new THREE.Vector2(8, 3), new THREE.Vector2(8, 7), new THREE.Vector2(12, 7)],
+    [new THREE.Vector2(12, 7), new THREE.Vector2(16, 7), new THREE.Vector2(16, 3)],
+    [new THREE.Vector2(16, 3), new THREE.Vector2(16, 1), new THREE.Vector2(14, 0)],
+    [new THREE.Vector2(15, 0), new THREE.Vector2(40, 0)],
+    [new THREE.Vector2(41, 0), new THREE.Vector2(39.5, 0), new THREE.Vector2(39, 3)],
+    [new THREE.Vector2(39, 3), new THREE.Vector2(40, 6), new THREE.Vector2(43, 6)],
+    [new THREE.Vector2(43, 6), new THREE.Vector2(46, 6), new THREE.Vector2(47, 3)],
+    [new THREE.Vector2(47, 3), new THREE.Vector2(47, 1), new THREE.Vector2(45, 0)],
+    [new THREE.Vector2(46, 0), new THREE.Vector2(49, 0), new THREE.Vector2(53, 0)],
+    [new THREE.Vector2(53, 0), new THREE.Vector2(53, 3), new THREE.Vector2(53, 4)],
+    [new THREE.Vector2(53, 4), new THREE.Vector2(52, 4), new THREE.Vector2(51, 6)],
+    [new THREE.Vector2(51, 6), new THREE.Vector2(48, 7), new THREE.Vector2(44, 9), new THREE.Vector2(40, 8)],
+    [new THREE.Vector2(40, 8), new THREE.Vector2(33, 6), new THREE.Vector2(29, 6)],
+    [new THREE.Vector2(29, 6), new THREE.Vector2(20, 6), new THREE.Vector2(17, 7)]
+]
+
+// Assign the body as the new curves
+curvesPoints = body.map(segment => segment.map(p => new THREE.Vector2(p.x, p.y)));
+
+// Create pointMeshes for visualization and interactivity
+curvesPoints.forEach(curve => {
+    curve.forEach(p => {
+        const mesh = new THREE.Mesh(pointGeometry, pointMaterial.clone());
+        mesh.position.set(p.x, p.y, 0);
+        scene.add(mesh);
+        pointMeshes.push(mesh);
+    });
+});
+
+updateCurves();
+
+// --------------------
+
 animate();

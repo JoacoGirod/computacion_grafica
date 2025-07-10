@@ -204,6 +204,7 @@ export class TridimensionalPrinter {
                 map: texture,
                 metalness: 0.3,
                 roughness: 0.7,
+                shininess: 1,
                 clippingPlanes: [this.clippingPlane],
                 clipShadows: true,
             })

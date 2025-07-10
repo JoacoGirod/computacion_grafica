@@ -58,49 +58,97 @@ export class SweepGenerator {
         }
 
         // === Cap generation ===
-        if (this.capMode === "shape") {
-            // Create triangulated face indices
-            const shape = new THREE.Shape(baseCurve.map(([x, z]) => new THREE.Vector2(x, z)));
-            const shapePoints = shape.getPoints();
-            const triangles = THREE.ShapeUtils.triangulateShape(shapePoints, []);
-            const bbox = new THREE.Box2().setFromPoints(shapePoints);
+        if (this.capMode === "shape" || this.capMode === "geometry") {
+            const shapePoints = baseCurve.map(([x, z]) => new THREE.Vector2(x, z));
+            const shape = new THREE.Shape(shapePoints);
 
-            const minX = bbox.min.x;
-            const minY = bbox.min.y;
-            const width = bbox.max.x - bbox.min.x;
-            const height = bbox.max.y - bbox.min.y;
+            // Use THREE.ShapeGeometry to generate reliable triangulated caps
+            if (this.capMode === "geometry") {
+                const shapeGeometry = new THREE.ShapeGeometry(shape);
+                const posAttr = shapeGeometry.getAttribute('position');
+                const uvAttr = shapeGeometry.getAttribute('uv');
+                const indexAttr = shapeGeometry.getIndex();
 
-            // Bottom cap (y = 0)
-            const bottomStart = 0;
-            for (let i = 0; i < shapePoints.length; i++) {
-                const x = shapePoints[i].x;
-                const z = shapePoints[i].y;
-                const u = (x - minX) / width;
-                const v = (z - minY) / height;
-                uvs[bottomStart + i] = [u, v];
-            }
+                const bottomStartIndex = vertices.length;
+                for (let i = 0; i < posAttr.count; i++) {
+                    const x = posAttr.getX(i);
+                    const z = posAttr.getY(i);
+                    vertices.push([x, 0, z]);
+                    uvs.push([uvAttr.getX(i), uvAttr.getY(i)]);
+                }
 
-            // Top cap (y = this.height)
-            const topStart = steps * nPoints;
-            for (let i = 0; i < shapePoints.length; i++) {
-                const x = shapePoints[i].x;
-                const z = shapePoints[i].y;
-                const u = (x - minX) / width;
-                const v = (z - minY) / height;
-                uvs[topStart + i] = [u, v];
-            }
+                for (let i = 0; i < indexAttr.count; i += 3) {
+                    const a = indexAttr.getX(i) + bottomStartIndex;
+                    const b = indexAttr.getX(i + 1) + bottomStartIndex;
+                    const c = indexAttr.getX(i + 2) + bottomStartIndex;
 
-            // Add faces
-            for (const [a, b, c] of triangles) {
-                const bottom = [a, b, c];
-                const top = [a + topStart, b + topStart, c + topStart];
+                    if (this.reverseNormals) {
+                        faces.push([c, b, a]);
+                    } else {
+                        faces.push([a, b, c]);
+                    }
+                }
 
-                if (this.reverseNormals) {
-                    faces.push([bottom[2], bottom[1], bottom[0]]);
-                    faces.push(top);
-                } else {
-                    faces.push(bottom);
-                    faces.push([top[2], top[1], top[0]]);
+                const topStartIndex = vertices.length;
+                for (let i = 0; i < posAttr.count; i++) {
+                    const x = posAttr.getX(i);
+                    const z = posAttr.getY(i);
+                    vertices.push([x, this.height, z]);
+                    uvs.push([uvAttr.getX(i), uvAttr.getY(i)]);
+                }
+
+                for (let i = 0; i < indexAttr.count; i += 3) {
+                    const a = indexAttr.getX(i) + topStartIndex;
+                    const b = indexAttr.getX(i + 1) + topStartIndex;
+                    const c = indexAttr.getX(i + 2) + topStartIndex;
+
+                    if (this.reverseNormals) {
+                        faces.push([a, b, c]);
+                    } else {
+                        faces.push([c, b, a]);
+                    }
+                }
+
+            } else {
+                // === Original triangulation ===
+                const shapePoints = shape.getPoints();
+                const triangles = THREE.ShapeUtils.triangulateShape(shapePoints, []);
+                const bbox = new THREE.Box2().setFromPoints(shapePoints);
+
+                const minX = bbox.min.x;
+                const minY = bbox.min.y;
+                const width = bbox.max.x - bbox.min.x;
+                const height = bbox.max.y - bbox.min.y;
+
+                const bottomStart = 0;
+                for (let i = 0; i < shapePoints.length; i++) {
+                    const x = shapePoints[i].x;
+                    const z = shapePoints[i].y;
+                    const u = (x - minX) / width;
+                    const v = (z - minY) / height;
+                    uvs[bottomStart + i] = [u, v];
+                }
+
+                const topStart = steps * nPoints;
+                for (let i = 0; i < shapePoints.length; i++) {
+                    const x = shapePoints[i].x;
+                    const z = shapePoints[i].y;
+                    const u = (x - minX) / width;
+                    const v = (z - minY) / height;
+                    uvs[topStart + i] = [u, v];
+                }
+
+                for (const [a, b, c] of triangles) {
+                    const bottom = [a, b, c];
+                    const top = [a + topStart, b + topStart, c + topStart];
+
+                    if (this.reverseNormals) {
+                        faces.push([bottom[2], bottom[1], bottom[0]]);
+                        faces.push(top);
+                    } else {
+                        faces.push(bottom);
+                        faces.push([top[2], top[1], top[0]]);
+                    }
                 }
             }
         }

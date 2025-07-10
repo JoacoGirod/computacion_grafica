@@ -180,16 +180,16 @@ export class Vehicle {
         const outerChasis = [
             [new THREE.Vector2(17, 7), new THREE.Vector2(11, 10), new THREE.Vector2(1, 5)],
             [new THREE.Vector2(1, 5), new THREE.Vector2(3, 3), new THREE.Vector2(3, 1)],
-            [new THREE.Vector2(3, 1), new THREE.Vector2(5, 0), new THREE.Vector2(0, 0)],
+            [new THREE.Vector2(3, 1), new THREE.Vector2(3, 0), new THREE.Vector2(0, 0)],
             [new THREE.Vector2(0, 0), new THREE.Vector2(9, 0)],
             [new THREE.Vector2(10, 0), new THREE.Vector2(8.5, 0), new THREE.Vector2(8, 3)],
-            [new THREE.Vector2(8, 3), new THREE.Vector2(9, 6), new THREE.Vector2(12, 6)],
-            [new THREE.Vector2(12, 6), new THREE.Vector2(15, 6), new THREE.Vector2(16, 3)],
+            [new THREE.Vector2(8, 3), new THREE.Vector2(8, 7), new THREE.Vector2(12, 7)],
+            [new THREE.Vector2(12, 7), new THREE.Vector2(16, 7), new THREE.Vector2(16, 3)],
             [new THREE.Vector2(16, 3), new THREE.Vector2(16, 1), new THREE.Vector2(14, 0)],
             [new THREE.Vector2(15, 0), new THREE.Vector2(40, 0)],
             [new THREE.Vector2(41, 0), new THREE.Vector2(39.5, 0), new THREE.Vector2(39, 3)],
-            [new THREE.Vector2(39, 3), new THREE.Vector2(40, 6), new THREE.Vector2(43, 6)],
-            [new THREE.Vector2(43, 6), new THREE.Vector2(46, 6), new THREE.Vector2(47, 3)],
+            [new THREE.Vector2(39, 3), new THREE.Vector2(39, 7), new THREE.Vector2(43, 7)],
+            [new THREE.Vector2(43, 7), new THREE.Vector2(47, 7), new THREE.Vector2(47, 3)],
             [new THREE.Vector2(47, 3), new THREE.Vector2(47, 1), new THREE.Vector2(45, 0)],
             [new THREE.Vector2(46, 0), new THREE.Vector2(49, 0), new THREE.Vector2(53, 0)],
             [new THREE.Vector2(53, 0), new THREE.Vector2(53, 3), new THREE.Vector2(53, 4)],
@@ -200,7 +200,7 @@ export class Vehicle {
         ]
         const scaledCurveCO = rescaleCurve(outerChasis, { maxWidth: 8, center: false, preserveAspect: true });
         const flattenedCurveCO = flattenBezierSegments(scaledCurveCO);
-        const generatorCO = new SweepGenerator(1, 0, 100);
+        const generatorCO = new SweepGenerator(1, 0, 100, false, "shape");
         const outerChasisMesh1 = new THREE.Mesh(generatorCO.generateGeometry(flattenedCurveCO), blackMaterial);
         const outerChasisMesh2 = new THREE.Mesh(generatorCO.generateGeometry(flattenedCurveCO), blackMaterial);
         outerChasisMesh1.rotation.x = -Math.PI / 2
@@ -226,7 +226,6 @@ export class Vehicle {
         innerChasisMesh.position.y = 0.05; innerChasisMesh.position.z = 1
 
         // ================== LIGHTS
-
         const redMaterial = new THREE.MeshPhongMaterial({
             color: 0xd11204,
             emissive: 0xd11204,
@@ -281,8 +280,6 @@ export class Vehicle {
 
             this.group.add(fixture);
         });
-
-
 
         // ================== COCKPIT
         const cockpit = [
@@ -388,6 +385,7 @@ export class Vehicle {
 
         const tireMaterial = new THREE.MeshPhongMaterial({ color: 0x0a0a0a });
         const yellowMaterial = new THREE.MeshPhongMaterial({ color: 0xf6b437 })
+        const darkYellowMaterial = new THREE.MeshPhongMaterial({ color: 0xe0a431 })
         const grayMaterial = new THREE.MeshPhongMaterial({ color: 0x424242 })
         const blackMaterial = new THREE.MeshPhongMaterial({
             color: 0x0d0d0d,
@@ -415,7 +413,7 @@ export class Vehicle {
             [new THREE.Vector2(-7, 1), new THREE.Vector2(-7, 0)],
             [new THREE.Vector2(-7, 0), new THREE.Vector2(0, 0)]
         ]
-        const scaledCurveWO = rescaleCurve(wheelOutside, { maxWidth: 0.6, maxHeight: 0.2, center: false, preserveAspect: false });
+        const scaledCurveWO = rescaleCurve(wheelOutside, { maxWidth: 0.6, maxHeight: 0.4, center: false, preserveAspect: false });
         const flattenedCurveWO = flattenBezierSegments(scaledCurveWO);
         const generatorWO = new RevolutionGenerator(50);
         const wheelOutsideMesh = new THREE.Mesh(generatorWO.generateGeometry(flattenedCurveWO), tireMaterial);
@@ -453,20 +451,21 @@ export class Vehicle {
         const generatorWI = new SweepGenerator(0.2, 0, 100);
         const wheelInsideMesh = new THREE.Mesh(generatorWI.generateGeometry(flattenedCurveWI), reflectiveMaterial);
         wheelInsideMesh.rotation.x = Math.PI / 2
+        wheelInsideMesh.position.z = 0.1
         const wheel1Group = new THREE.Group()
         wheel1Group.add(wheelOutsideMesh, wheelInsideMesh)
 
         const wheel2Group = wheel1Group.clone()
-        wheel1Group.scale.copy(new THREE.Vector3(1.3, 1.3, 1))
+        wheel1Group.scale.copy(new THREE.Vector3(1.25, 1.25, 1))
         const wheel3Group = wheel1Group.clone();
-        wheel3Group.scale.copy(new THREE.Vector3(1.3, -1.3, -1))
+        wheel3Group.scale.copy(new THREE.Vector3(1.25, -1.25, -1))
         const wheel4Group = wheel1Group.clone();
         wheel4Group.scale.copy(new THREE.Vector3(1, -1, -1));
 
-        wheel1Group.position.x = 1.7; wheel1Group.position.y = 0.77; wheel1Group.position.z = 1.3
-        wheel2Group.position.x = 5.3; wheel2Group.position.y = 0.6; wheel2Group.position.z = 1.3
-        wheel3Group.position.x = 1.7; wheel3Group.position.y = 0.77; wheel3Group.position.z = -1.3
-        wheel4Group.position.x = 5.3; wheel4Group.position.y = 0.6; wheel4Group.position.z = -1.3
+        wheel1Group.position.x = 1.7; wheel1Group.position.y = 0.77; wheel1Group.position.z = 1.1
+        wheel2Group.position.x = 5.1; wheel2Group.position.y = 0.6; wheel2Group.position.z = 1.1
+        wheel3Group.position.x = 1.7; wheel3Group.position.y = 0.77; wheel3Group.position.z = -1.1
+        wheel4Group.position.x = 5.1; wheel4Group.position.y = 0.6; wheel4Group.position.z = -1.1
 
         this.wheels.push(wheel1Group, wheel2Group, wheel3Group, wheel4Group)
 
@@ -475,9 +474,9 @@ export class Vehicle {
         wheels.add(wheel1Group, wheel2Group, wheel3Group, wheel4Group)
 
         // ================ BODIES
+
         const body = [
-            [new THREE.Vector2(4, 0), new THREE.Vector2(4, 4), new THREE.Vector2(0, 4)],
-            [new THREE.Vector2(4, 0), new THREE.Vector2(12, 0)],
+            [new THREE.Vector2(5, 0), new THREE.Vector2(12, 0)],
             [new THREE.Vector2(12, 0), new THREE.Vector2(12, 3), new THREE.Vector2(14, 3)],
             [new THREE.Vector2(14, 3), new THREE.Vector2(16, 3)],
             [new THREE.Vector2(16, 3), new THREE.Vector2(18, 3), new THREE.Vector2(18, 0)],
@@ -492,14 +491,14 @@ export class Vehicle {
             [new THREE.Vector2(14, 7), new THREE.Vector2(14, 6)],
             [new THREE.Vector2(14, 6), new THREE.Vector2(12, 6)],
             [new THREE.Vector2(12, 6), new THREE.Vector2(8, 3)],
-            [new THREE.Vector2(8, 3), new THREE.Vector2(5, 3)],
-            [new THREE.Vector2(5, 3), new THREE.Vector2(4, 4), new THREE.Vector2(0, 5)],
-            [new THREE.Vector2(0, 5), new THREE.Vector2(0, 4)]
+            [new THREE.Vector2(8, 3), new THREE.Vector2(6, 3)],
+            [new THREE.Vector2(6, 3), new THREE.Vector2(4, 5), new THREE.Vector2(0, 5)],
+            [new THREE.Vector2(0, 5), new THREE.Vector2(-1, 4.5), new THREE.Vector2(0, 4)],
+            [new THREE.Vector2(0, 4), new THREE.Vector2(4, 4), new THREE.Vector2(5, 0)],
         ]
-
         const scaledCurveB = rescaleCurve(body, { maxWidth: 5, center: false, preserveAspect: true });
         const flattenedCurveB = flattenBezierSegments(scaledCurveB);
-        const generatorB = new SweepGenerator(3, 0, 100);
+        const generatorB = new SweepGenerator(3, 0, 100, false, "geometry");
         const bodyMesh = new THREE.Mesh(generatorB.generateGeometry(flattenedCurveB), yellowMaterial);
         bodyMesh.rotation.x = - Math.PI / 2
         bodyMesh.position.x = 1.5; bodyMesh.position.y = 0.6; bodyMesh.position.z = 1.5
@@ -596,16 +595,20 @@ export class Vehicle {
 
         // ================ LIFTER CONNECTOR
         const railConnector = [
-            [new THREE.Vector2(0, 8), new THREE.Vector2(4, 4), new THREE.Vector2(0, 2)],
+            [new THREE.Vector2(0, 8), new THREE.Vector2(4, 5), new THREE.Vector2(0, 2)],
             [new THREE.Vector2(0, 2), new THREE.Vector2(0, 0)],
-            [new THREE.Vector2(18, 0), new THREE.Vector2(0, 0)],
-            [new THREE.Vector2(18, 0), new THREE.Vector2(13, 9)],
-            [new THREE.Vector2(13, 9), new THREE.Vector2(0, 8)]
+            [new THREE.Vector2(0, 0), new THREE.Vector2(60, 0)],
+            [new THREE.Vector2(60, 0), new THREE.Vector2(60, 10)],
+            [new THREE.Vector2(60, 10), new THREE.Vector2(40, 10)],
+            [new THREE.Vector2(40, 10), new THREE.Vector2(30, 7.5), new THREE.Vector2(30, 5)],
+            [new THREE.Vector2(30, 5), new THREE.Vector2(30, 9), new THREE.Vector2(20, 10)],
+            [new THREE.Vector2(20, 10), new THREE.Vector2(0, 10)],
+            [new THREE.Vector2(0, 10), new THREE.Vector2(0, 8)],
         ]
-        const scaledCurveRC = rescaleCurve(railConnector, { maxWidth: 3, maxHeight: 1.2, center: false, preserveAspect: false });
+        const scaledCurveRC = rescaleCurve(railConnector, { maxWidth: 6, maxHeight: 1.2, center: false, preserveAspect: false });
         const flattenedCurveRC = flattenBezierSegments(scaledCurveRC);
         const generatorRC = new SweepGenerator(2.25, 0, 100);
-        const railConnectorMesh = new THREE.Mesh(generatorRC.generateGeometry(flattenedCurveRC), yellowMaterial);
+        const railConnectorMesh = new THREE.Mesh(generatorRC.generateGeometry(flattenedCurveRC), darkYellowMaterial);
         railConnectorMesh.rotation.x = - Math.PI / 2
         railConnectorMesh.position.y = 0.6; railConnectorMesh.position.z = 1.125
 
