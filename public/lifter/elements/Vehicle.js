@@ -386,12 +386,11 @@ export class Vehicle {
         this.group.clear();
         this.wheels = []
 
-        const normalMaterial = new THREE.MeshNormalMaterial()
         const tireMaterial = new THREE.MeshPhongMaterial({ color: 0x0a0a0a });
         const yellowMaterial = new THREE.MeshPhongMaterial({ color: 0xf6b437 })
         const grayMaterial = new THREE.MeshPhongMaterial({ color: 0x424242 })
         const blackMaterial = new THREE.MeshPhongMaterial({
-            color: 0x3b1212,
+            color: 0x0d0d0d,
             shininess: 100,
             specular: 0xaaaaaa,
             emissive: 0x000000,
@@ -466,8 +465,8 @@ export class Vehicle {
 
         wheel1Group.position.x = 1.7; wheel1Group.position.y = 0.77; wheel1Group.position.z = 1.3
         wheel2Group.position.x = 5.3; wheel2Group.position.y = 0.6; wheel2Group.position.z = 1.3
-        wheel3Group.position.x = 1.7; wheel3Group.position.y = 0.77; wheel3Group.position.z = -1.5
-        wheel4Group.position.x = 5.3; wheel4Group.position.y = 0.6; wheel4Group.position.z = -1.5
+        wheel3Group.position.x = 1.7; wheel3Group.position.y = 0.77; wheel3Group.position.z = -1.3
+        wheel4Group.position.x = 5.3; wheel4Group.position.y = 0.6; wheel4Group.position.z = -1.3
 
         this.wheels.push(wheel1Group, wheel2Group, wheel3Group, wheel4Group)
 
@@ -608,7 +607,7 @@ export class Vehicle {
         const generatorRC = new SweepGenerator(2.25, 0, 100);
         const railConnectorMesh = new THREE.Mesh(generatorRC.generateGeometry(flattenedCurveRC), yellowMaterial);
         railConnectorMesh.rotation.x = - Math.PI / 2
-        railConnectorMesh.position.y = 0.7; railConnectorMesh.position.z = 1.125
+        railConnectorMesh.position.y = 0.6; railConnectorMesh.position.z = 1.125
 
 
         // ================ VEHICLE
