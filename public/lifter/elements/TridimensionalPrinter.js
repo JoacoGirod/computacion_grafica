@@ -167,7 +167,7 @@ export class TridimensionalPrinter {
                 center: false,
                 preserveAspect: true
             });
-            generator = new SweepGenerator(alturaTotal, anguloTorsion * 2 * Math.PI / 360, pasosGeneracion);
+            generator = new SweepGenerator(alturaTotal, anguloTorsion * 2 * Math.PI / 360, pasosGeneracion, false, "geometry");
         } else {
             throw new Error(`Tipo de superficie inválido: ${tipoSuperficie}`);
         }
@@ -188,7 +188,7 @@ export class TridimensionalPrinter {
         }
 
         if (texture) {
-            const scaleFactorU = 8;  // tweak these as needed
+            const scaleFactorU = 8;
             const scaleFactorV = 5;
 
             const repeatX = anchoTotal * scaleFactorU;

@@ -58,7 +58,7 @@ export class PrinterGUI {
 
         gui.add(menuValues, 'anguloTorsion').name('Ángulo de torsión').min(0).max(360).step(1);
         gui.add(menuValues, 'alturaTotal').name('Altura total').min(1).max(3.2).step(0.1);
-        gui.add(menuValues, 'anchoTotal').name('Ancho total').min(0.2).max(1.5).step(0.1);
+        gui.add(menuValues, 'anchoTotal').name('Ancho total').min(0.5).max(1.5).step(0.1);
         gui.add(menuValues, 'pasosGeneracion').name('Pasos Gen').min(5).max(50).step(1)
         gui.add(menuValues, 'pasosCurva').name('Pasos Curva').min(5).max(50).step(1)
         gui.add(menuValues, 'imprimir').name('Imprimir');
